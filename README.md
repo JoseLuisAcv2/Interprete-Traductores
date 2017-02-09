@@ -1,2 +1,2 @@
 
-#Retina programming language interpreter
+#Retina Interpreter
