@@ -1,0 +1,82 @@
+palabra reservada:
+		program
+		
+		with
+		do
+
+		begin
+		end
+
+		repeat
+		times
+		
+		read
+		write
+		writeln
+
+		if
+		then
+		else
+		
+		while
+
+		for
+		from
+		to
+		by
+
+		func
+		return
+		->
+
+
+tipo de dato:
+		number
+		boolean
+
+literal booleano:
+		true
+		false
+
+
+
+operador logico:
+		not
+		and
+		or
+
+signo:
+		(
+		)
+		=
+		;
+
+operador de comparacion:
+		==
+		/=
+		>=
+		<=
+		>
+		<
+
+
+operador aritmetico:
+		+
+		-
+		*
+		/
+		%
+		div
+		mod
+
+
+literal numerico:
+		[1-9][0-9]*(\.[0-9]+)?
+
+
+
+literal de string:
+		Todo caracter imprimible meno \n, " y \ a menos que esten escapados
+
+identificador: (aqui van nombres de funcion tambien)
+		[a-z][a-zA-Z0-9_]*
