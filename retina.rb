@@ -2,7 +2,7 @@
 #
 # 	Traductores e Interpretadores CI-3725
 # 	
-# 	Proyecto Fase 1 - Interpreter main file
+# 	Proyecto Fase 2 - Interpreter main file
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
@@ -33,8 +33,10 @@ def main
 		return;
 	end;
 
+	input = ARGV[0];
+
 	# Create lexer
-	lexer = Lexer.new ARGV[0];
+	lexer = Lexer.new input;
 	lexer.get_tokens;
 
 	if lexer.has_lexicographic_errors then
@@ -42,10 +44,15 @@ def main
 		return;
 	end;
 
-	parser = Parser.new;
-	ast = parser.parse lexer;
-	#ast.print_ast;
-
-end;
+	begin
+		lexer.print_tokens
+		parser = Parser.new
+		ast = parser.parse lexer
+		#ast.print_ast
+	rescue SyntacticError => e
+		puts e
+		return
+	end
+end
 
 main

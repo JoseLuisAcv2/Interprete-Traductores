@@ -128,10 +128,10 @@ class NumberType < DataType;end
 class BooleanType < DataType;end
 
 class LogicalUnaryOperator < UnaryOperator;end
-class ArithmeticlUnaryOperator < UnaryOperator;end
+class ArithmeticUnaryOperator < UnaryOperator;end
 
 class LogicalBinaryOperator < BinaryOperator;end
-class ArithmeticlBinaryOperator < BinaryOperator;end
+class ArithmeticBinaryOperator < BinaryOperator;end
 class ComparisonOperator < BinaryOperator;end
 
 class LogicalNot < LogicalUnaryOperator;end

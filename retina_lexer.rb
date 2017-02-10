@@ -8,66 +8,65 @@
 # 				- Edwar Yepez		12-10855
 #
 
+class Token
+	attr_reader :t
+	attr_reader :line
+	attr_reader :column
+  
+	def initialize text, line, column
+		@t = text
+		@line = line
+		@column = column
+	end
+
+	def to_s
+  		"Tk#{self.class}"
+	end
+end
+
 # Regular expression list that accepts Retina tokens
-$regex = {
-	/^program$/								=>		"palabra reservada",
-	/^begin$/								=>		"palabra reservada",
-	/^end$/									=>		"palabra reservada",
-	/^with$/								=>		"palabra reservada",
-	/^do$/									=>		"palabra reservada",
-	/^repeat$/								=>		"palabra reservada",
-	/^times$/								=>		"palabra reservada",
-	/^read$/								=>		"palabra reservada",
-	/^write$/								=>		"palabra reservada",
-	/^writeln$/								=>		"palabra reservada",
-	/^if$/									=>		"palabra reservada",
-	/^then$/								=>		"palabra reservada",
-	/^else$/								=>		"palabra reservada",
-	/^while$/								=>		"palabra reservada",
-	/^for$/									=>		"palabra reservada",
-	/^from$/								=>		"palabra reservada",
-	/^to$/									=>		"palabra reservada",
-	/^by$/									=>		"palabra reservada",
-	/^func$/								=>		"palabra reservada",
-	/^return$/								=>		"palabra reservada",
-	/^->$/									=>		"palabra reservada",
-	/^number$/								=>		"tipo de dato",
-	/^boolean$/								=>		"tipo de dato",
-	/^true$/								=>		"literal booleano",
-	/^false$/								=>		"literal booleano",
-	/^and$/									=>		"operador lógico",
-	/^or$/									=>		"operador lógico",
-	/^not$/									=>		"operador lógico",
-	/^==$/									=>		"operador de comparación",
-	/^\/=$/									=>		"operador de comparación",
-	/^>=$/									=>		"operador de comparación",
-	/^<=$/									=>		"operador de comparación",
-	/^>$/									=>		"operador de comparación",
-	/^<$/									=>		"operador de comparación",
-	/^\($/									=>		"signo",
-	/^\)$/									=>		"signo",
-	/^=$/									=>		"signo",
-	/^;$/									=>		"signo",
-	/^\+$/									=>		"operador aritmético",
-	/^-$/									=>		"operador aritmético",
-	/^\*$/									=>		"operador aritmético",
-	/^\/$/									=>		"operador aritmético",	
-	/^%$/									=>		"operador aritmético",
-	/^div$/									=>		"operador aritmético",
-	/^mod$/									=>		"operador aritmético",
-	/^([1-9][0-9]*|0)(\.[0-9]+)?$/			=>		"literal numérico",
-	/^"([^\\n\"\\]|\\\\|\\\\n|\\\")*"$/		=>		"literal de string",
-	/^[a-z][a-zA-Z0-9_]*$/					=>		"identificador",
-};
+$tokens = {
+	Reserved:  		           				/\A(program|with|do|begin|end|repeat|times|read|write|writeln|if|then|else|while|for|from|to|by|func|return|->)/,
+	Type:  					  				/\A(number|boolean)/,
+	LogicalOP: 		     	  				/\A(not|and|or)/,
+	ComparisonOP: 							/\A(==|!=|>=|>|<=|<)/,
+	ArithmeticOP:							/\A(\+|-|\*|\/|%|div|mod)/,
+	Sign: 									/\A(\(|\)|=|;|,)/,
+	Booleanliteral: 						/\A(true|false)/,
+	Numericalliteral: 						/\A([1-9][0-9]*|0)(\.[0-9]+)?/,
+	Stringliteral: 							/\A"([^\\n\"\\]|\\\\|\\\\n|\\\")*"/,
+	Id: 									/\A[a-z][a-zA-Z0-9_]*/,
+
+}
+
+class LexicographicError < RuntimeError
+	def initialize t
+		@t = t
+	end
+
+	def to_s
+		"Unknown lexeme \'#{@t}\'"
+	end
+end
+
+class Reserved < Token; end
+class Sign < Token; end
+class Type < Token; end
+class LogicalOP < Token; end
+class ComparisonOP < Token; end
+class ArithmeticOP < Token; end
+class Booleanliteral < Token; end
+class Numericalliteral < Token; end
+class Stringliteral < Token; end
+class Id < Token; end
 
 class Lexer
 	attr_reader :tokens;
 
 	def initialize input_file
-		@cur_token=0;
+		@cur_token = 0;
 		@input_file	= input_file;
 		@tokens = Array.new;
-		@tokens_location = Array.new;
 		@lexicographic_errors = Array.new;
 		@lexicographic_errors_location = Array.new;
 	end;
@@ -78,15 +77,15 @@ class Lexer
 		
 		if word.empty? then return end;
 	
-		$regex.each do |expression, result|
+		$tokens.each do |result, expression|
 			if word =~ expression then
-				@tokens.push([result,word]);
-				@tokens_location.push([line,column]);
+				token_class = Object::const_get(result)
+				@tokens << token_class.new(word,line,column)
 				return;
 			end;
 		end;
-		@lexicographic_errors.push(["",word]);
-		@lexicographic_errors_location.push([line,column]);
+		@lexicographic_errors << (["",word]);
+		@lexicographic_errors_location << ([line,column]);
 	end;
 
 
@@ -165,7 +164,7 @@ class Lexer
 	# Returns next token
 	def next_token
 		token = @tokens[@cur_token];
-		@cur_token = @cur_token + 1; 
+		@cur_token = @cur_token + 1;
 		return token;
 	end;
 
@@ -186,8 +185,8 @@ class Lexer
 
 	# Prints all tokens found in the input file
 	def print_tokens
-		@tokens.zip(@tokens_location).each do |result, location|
-			puts "Line #{location[0]}, column #{location[1]}: #{result[0]} '#{result[1]}'";
+		@tokens.each do |token|
+			puts "Line #{token.line}, column #{token.column}: #{token.class} '#{token.t}'";
 		end;		
 	end;
 
