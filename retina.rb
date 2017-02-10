@@ -44,15 +44,17 @@ def main
 		return;
 	end;
 
-	begin
+	#begin
+
 		lexer.print_tokens
+
 		parser = Parser.new
 		ast = parser.parse lexer
 		#ast.print_ast
-	rescue SyntacticError => e
-		puts e
-		return
-	end
+	#rescue SyntacticError => e
+	#	puts e
+	#	return
+	#end
 end
 
 main

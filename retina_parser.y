@@ -1,14 +1,15 @@
 class Parser
 
-	token Reserved
+	token Reserved;
 
 start Retina
 
 rule
 
-	Retina: Expression ;
+	Retina: Expression {puts val[0] }
 
     Expression: Reserved;
+end
 
 ---- header
 
@@ -26,18 +27,20 @@ class SyntacticError < RuntimeError
     end
 end
 
-
 ---- inner
 
 def on_error(id, token, stack)
     raise SyntacticError::new(token)
 end
 
-
 def next_token
 	if @lexer.has_next_token then
 		token = @lexer.next_token;
-        return [token.class,token]
+        case token.class.to_s
+        when "Reserved"
+            return [:Reserved,token.t]
+
+        end
     else
         return [false,false];
 	end

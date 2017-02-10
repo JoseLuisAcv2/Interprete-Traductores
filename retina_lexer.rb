@@ -126,12 +126,12 @@ class Lexer
 							get_single_token(word,$.,column);
 							break;
 						
-						when " ","\t","\n",","
+						when " ","\t","\n"
 							get_single_token(word,$.,column);
 							word = "";
 						 	column = cur_column+1;
 						
-						when ";","(",")"
+						when ";","(",")",","
 							get_single_token(word,$.,column);
 							get_single_token(cur,$.,cur_column);		
 							word = "";

@@ -8,6 +8,7 @@ require 'racc/parser.rb'
 
 
 require_relative "retina_lexer"
+require_relative "retina_ast"
 
 class SyntacticError < RuntimeError
 
@@ -16,26 +17,29 @@ class SyntacticError < RuntimeError
     end
 
     def to_s
-        "Syntactic error on: #{@token}"   
+        "Syntactic error on line #{@token.line}, column #{@token.column}: #{@token.t}"   
     end
 end
 
-
 class Parser < Racc::Parser
 
-module_eval(<<'...end retina_parser.y/module_eval...', 'retina_parser.y', 33)
+module_eval(<<'...end retina_parser.y/module_eval...', 'retina_parser.y', 31)
 
 def on_error(id, token, stack)
     raise SyntacticError::new(token)
 end
 
-
 def next_token
-	#if @lexer.has_next_token then
-	#	return @lexer.next_token;
-	#else
-		return [false,false];
-	#end
+	if @lexer.has_next_token then
+		token = @lexer.next_token;
+        case token.class.to_s
+        when "Reserved"
+            return [:Reserved,token.t]
+
+        end
+    else
+        return [false,false];
+	end
 end
 
 def parse(lexer)
@@ -49,41 +53,42 @@ end
 ##### State transition tables begin ###
 
 racc_action_table = [
-     2,     3,     4 ]
+     3,     4,     5 ]
 
 racc_action_check = [
-     0,     1,     3 ]
+     0,     1,     4 ]
 
 racc_action_pointer = [
-    -2,     1,   nil,     2,   nil ]
+    -2,     1,   nil,   nil,     2,   nil ]
 
 racc_action_default = [
-    -2,    -2,    -1,    -2,     5 ]
+    -3,    -3,    -1,    -2,    -3,     6 ]
 
 racc_goto_table = [
-     1 ]
+     1,     2 ]
 
 racc_goto_check = [
-     1 ]
+     1,     2 ]
 
 racc_goto_pointer = [
-   nil,     0 ]
+   nil,     0,     1 ]
 
 racc_goto_default = [
-   nil,   nil ]
+   nil,   nil,   nil ]
 
 racc_reduce_table = [
   0, 0, :racc_error,
-  1, 4, :_reduce_none ]
+  1, 4, :_reduce_1,
+  1, 5, :_reduce_none ]
 
-racc_reduce_n = 2
+racc_reduce_n = 3
 
-racc_shift_n = 5
+racc_shift_n = 6
 
 racc_token_table = {
   false => 0,
   :error => 1,
-  "program" => 2 }
+  :RESERVED => 2 }
 
 racc_nt_base = 3
 
@@ -108,9 +113,10 @@ Racc_arg = [
 Racc_token_to_s_table = [
   "$end",
   "error",
-  "\"program\"",
+  "RESERVED",
   "$start",
-  "Retina" ]
+  "Retina",
+  "Expression" ]
 
 Racc_debug_parser = false
 
@@ -118,7 +124,14 @@ Racc_debug_parser = false
 
 # reduce 0 omitted
 
-# reduce 1 omitted
+module_eval(<<'.,.,', 'retina_parser.y', 8)
+  def _reduce_1(val, _values, result)
+    puts val[0] 
+    result
+  end
+.,.,
+
+# reduce 2 omitted
 
 def _reduce_none(val, _values, result)
   val[0]
