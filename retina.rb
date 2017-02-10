@@ -10,6 +10,7 @@
 #
 
 require_relative 'retina_lexer'
+require_relative 'retina_parser'
 
 def main
 
@@ -43,7 +44,7 @@ def main
 
 	parser = Parser.new;
 	ast = parser.parse lexer;
-	ast.print_ast;
+	#ast.print_ast;
 
 end;
 

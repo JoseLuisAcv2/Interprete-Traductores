@@ -64,6 +64,7 @@ class Lexer
 	attr_reader :tokens;
 
 	def initialize input_file
+		@cur_token=0;
 		@input_file	= input_file;
 		@tokens = Array.new;
 		@tokens_location = Array.new;
@@ -79,12 +80,12 @@ class Lexer
 	
 		$regex.each do |expression, result|
 			if word =~ expression then
-				@tokens.push([word,result]);
+				@tokens.push([result,word]);
 				@tokens_location.push([line,column]);
 				return;
 			end;
 		end;
-		@lexicographic_errors.push([word,""]);
+		@lexicographic_errors.push(["",word]);
 		@lexicographic_errors_location.push([line,column]);
 	end;
 
@@ -155,6 +156,20 @@ class Lexer
 	end;
 
 
+	# Checks whether there are any tokens left
+	def has_next_token
+		return @cur_token < @tokens.length;
+	end;
+
+
+	# Returns next token
+	def next_token
+		token = @tokens[@cur_token];
+		@cur_token = @cur_token + 1; 
+		return token;
+	end;
+
+
 	# Checks whether input file has any lexicographic errors
 	def has_lexicographic_errors
 		return @lexicographic_errors.any?;
@@ -164,7 +179,7 @@ class Lexer
 	# Prints all lexicographic erros found in the input file
 	def print_lexicographic_errors
 		@lexicographic_errors.zip(@lexicographic_errors_location).each do |result, location|
-			puts "Line #{location[0]}, column #{location[1]}: unexpected character '#{result[0]}'";
+			puts "Line #{location[0]}, column #{location[1]}: unexpected character '#{result[1]}'";
 		end;	
 	end;
 
@@ -172,7 +187,7 @@ class Lexer
 	# Prints all tokens found in the input file
 	def print_tokens
 		@tokens.zip(@tokens_location).each do |result, location|
-			puts "Line #{location[0]}, column #{location[1]}: #{result[1]} '#{result[0]}'";
+			puts "Line #{location[0]}, column #{location[1]}: #{result[0]} '#{result[1]}'";
 		end;		
 	end;
 
