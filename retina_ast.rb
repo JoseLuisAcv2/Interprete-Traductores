@@ -48,31 +48,19 @@ class DataType < AST
     end
 end
 
-class Literal < AST
-    attr_accessor :literal
-
-    def initialize l
-        @literal = l
-    end
-
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@literal}"
-    end
-end
-
-class LogicalUnaryOperator < AST
-    attr_accessor :operand
+class UnaryOperator < AST
+	attr_accessor :operand
 
     def initialize op
         @operand = op
     end
 
     def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@op}"
+        puts "#{indent}#{self.class}: #{@operand}"
     end
 end
 
-class LogicalBinaryOperator < AST
+class BinaryOperator < AST
     attr_accessor :left, :right
 
     def initialize lh, rh
@@ -81,56 +69,31 @@ class LogicalBinaryOperator < AST
     end
 
 	def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@lh} #{@rh}"
-    end
-end
-
-class ComparisonOperator < AST
-    attr_accessor :operand
-
-    def initialize op
-        @operand = op
-    end
-
-	def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@operand}"
-    end
-end
-
-class ArithmeticUnaryOperator < AST
-    attr_accessor :operand
-
-    def initialize operand
-        @operand = operand
-    end
-
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@operand}"
-    end
-end
-
-class ArithmeticBinaryOperator < AST
-    attr_accessor :left, :right
-
-    def initialize lh, rh
-        @left = lh
-        @right = rh
-    end
-
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@lh} #{@rh}"
+        puts "#{indent}#{self.class}: #{@left} #{@right}"
     end
 end
 
 class Identifier < AST
-    attr_accessor :id
+    attr_accessor :name
 
-    def initialize _id
-        @id = _id
+    def initialize n
+        @name = n
     end
 
     def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@id}"
+        puts "#{indent}#{self.class}: #{@name}"
+    end
+end
+
+class Literal < AST
+    attr_accessor :value
+
+    def initialize v
+        @value = v
+    end
+
+    def print_ast indent=""
+        puts "#{indent}#{self.class}: #{@value}"
     end
 end
 
@@ -164,10 +127,15 @@ class ReturnType < ReservedWord;end
 class NumberType < DataType;end
 class BooleanType < DataType;end
 
-class BooleanTrue < BooleanLiteral;end
-class BooleanFalse < BooleanLiteral;end
+class LogicalUnaryOperator < UnaryOperator;end
+class ArithmeticlUnaryOperator < UnaryOperator;end
+
+class LogicalBinaryOperator < BinaryOperator;end
+class ArithmeticlBinaryOperator < BinaryOperator;end
+class ComparisonOperator < BinaryOperator;end
 
 class LogicalNot < LogicalUnaryOperator;end
+
 class LogicalAnd < LogicalBinaryOperator;end
 class LogicalOr < LogicalBinaryOperator;end
 
@@ -191,3 +159,6 @@ class IntegerModulo < ArithmeticBinaryOperator;end
 class BooleanLiteral < Literal;end
 class NumericalLiteral < Literal;end
 class StringLiteral < Literal;end
+
+class BooleanTrue < BooleanLiteral;end
+class BooleanFalse < BooleanLiteral;end
