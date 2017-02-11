@@ -195,10 +195,16 @@ class Lexer
 						@tokens << Token.new(:NOT, word, lineIndex, colIndex)
 						colIndex += word.size
 	
-					when /^(and|or)/
-						word = line[/^(and|or)/]
+					when /^or/
+						word = line[/^or/]
 						line = line.partition(word).last
-						@tokens << Token.new(:BOOLEANOP, word, lineIndex, colIndex)
+						@tokens << Token.new(:OR, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^and/
+						word = line[/^and/]
+						line = line.partition(word).last
+						@tokens << Token.new(:AND, word, lineIndex, colIndex)
 						colIndex += word.size
 
 					when /^(==|\/=)/

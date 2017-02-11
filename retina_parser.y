@@ -7,18 +7,24 @@ class Parser
         left MULT DIV MOD
         left PLUS MINUS
         nonassoc EQUALITYOP ORDEROP
-        left BOOLEANOP
+        left AND
+        left OR
         right ASSIGNOP
+        left COLON
         left SEMICOLON
 
     preclow
 
     token   PROGRAM BEGINBLK ENDBLK WITH DO REPEAT TIMES READ WRITE WRITELN 
             IF THEN ELSE WHILE FOR FROM TO BY FUNC RETURN RETURNTYPE TYPE 
-            BOOLEAN BOOLEANOP NOT EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP 
+            BOOLEAN OR AND NOT EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP 
             SEP COLON MINUS PLUS ARITHMETICOP NUMBER STRING IDENTIFIER
 
     rule
+
+        r
+        : retina
+        ;
         
         retina
         : defblk programblk
@@ -30,11 +36,11 @@ class Parser
         ;
  
         defblk
-        : def defblk
+        : funcdef defblk
         | 
         ;
 
-        def
+        funcdef
         : FUNC ident LPARENTH paramlist RPARENTH BEGINBLK funcinstr ENDBLK SEP
         | FUNC ident LPARENTH paramlist RPARENTH RETURNTYPE TYPE BEGINBLK funcinstr ENDBLK SEP
         | FUNC ident LPARENTH RPARENTH BEGINBLK funcinstr ENDBLK SEP
@@ -152,7 +158,8 @@ class Parser
         ;
 
         bexpr
-        : bexpr BOOLEANOP bexpr
+        : bexpr AND bexpr
+        | bexpr OR bexpr
         | LPARENTH bexpr RPARENTH  =BPRNTS
         | NOT bexpr
         | expr EQUALITYOP expr
