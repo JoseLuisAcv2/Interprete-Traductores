@@ -1,3 +1,15 @@
-func ola() begin
-	1;
+func ola(number a, boolean a) begin
+	return o(5,2.1,2);
+	return;
+	beginf;
+	w;
+end;
+
+program
+	(1-a+(1-2));
+	for i from 1 to toa+a  do
+	end;
+	repeat (a+a) times end;
+	read i;
+	write i,a,a,a,"asasa"\\n";
 end;

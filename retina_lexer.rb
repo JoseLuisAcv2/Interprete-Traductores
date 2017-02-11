@@ -69,103 +69,103 @@ class Lexer
 					when /^#/
 						word = line[/^#/]
 						line = ""
-					when /^program/
+					when /^program[^a-zA-Z0-9_]/
 						word = line[/^program/]
 						line = line.partition(word).last
 						@tokens << Token.new(:PROGRAM, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^begin/
+					when /^begin[^a-zA-Z0-9_]/
 						word = line[/^begin/]
 						line = line.partition(word).last
 						@tokens << Token.new(:BEGINBLK, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^end/
+					when /^end[^a-zA-Z0-9_]/
 						word = line[/^end/]
 						line = line.partition(word).last
 						@tokens << Token.new(:ENDBLK, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^with/
+					when /^with[^a-zA-Z0-9_]/
 						word = line[/^with/]
 						line = line.partition(word).last
 						@tokens << Token.new(:WITH, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^do/
+					when /^do[^a-zA-Z0-9_]/
 						word = line[/^do/]
 						line = line.partition(word).last
 						@tokens << Token.new(:DO, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^repeat/
+					when /^repeat[^a-zA-Z0-9_]/
 						word = line[/^repeat/]
 						line = line.partition(word).last
 						@tokens << Token.new(:REPEAT, word, lineIndex, colIndex)
 						colIndex += word.size	
-					when /^times/
+					when /^times[^a-zA-Z0-9_]/
 						word = line[/^times/]
 						line = line.partition(word).last
 						@tokens << Token.new(:TIMES, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^read/
+					when /^read[^a-zA-Z0-9_]/
 						word = line[/^read/]
 						line = line.partition(word).last
 						@tokens << Token.new(:READ, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^write/
+					when /^write[^a-zA-Z0-9_]/
 						word = line[/^write/]
 						line = line.partition(word).last
 						@tokens << Token.new(:WRITE, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^writeln/
+					when /^writeln[^a-zA-Z0-9_]/
 						word = line[/^writeln/]
 						line = line.partition(word).last
 						@tokens << Token.new(:WRITELN, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^if/
+					when /^if[^a-zA-Z0-9_]/
 						word = line[/^if/]
 						line = line.partition(word).last
 						@tokens << Token.new(:IF, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^then/
+					when /^then[^a-zA-Z0-9_]/
 						word = line[/^then/]
 						line = line.partition(word).last
 						@tokens << Token.new(:THEN, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^else/
+					when /^else[^a-zA-Z0-9_]/
 						word = line[/^else/]
 						line = line.partition(word).last
 						@tokens << Token.new(:ELSE, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^while/
+					when /^while[^a-zA-Z0-9_]/
 						word = line[/^while/]
 						line = line.partition(word).last
 						@tokens << Token.new(:WHILE, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^for/
+					when /^for[^a-zA-Z0-9_]/
 						word = line[/^for/]
 						line = line.partition(word).last
 						@tokens << Token.new(:FOR, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^from/
+					when /^from[^a-zA-Z0-9_]/
 						word = line[/^from/]
 						line = line.partition(word).last
 						@tokens << Token.new(:FROM, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^to/
+					when /^to[^a-zA-Z0-9_]/
 						word = line[/^to/]
 						line = line.partition(word).last
 						@tokens << Token.new(:TO, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^by/
+					when /^by[^a-zA-Z0-9_]/
 						word = line[/^by/]
 						line = line.partition(word).last
 						@tokens << Token.new(:BY, word, lineIndex, colIndex)
 						colIndex += word.size
-					when /^func/
+					when /^func[^a-zA-Z0-9_]/
 						word = line[/^func/]
 						line = line.partition(word).last
 						@tokens << Token.new(:FUNC, word, lineIndex, colIndex)
 						colIndex += word.size
 	
-					when /^return/
+					when /^return[^a-zA-Z0-9_]/
 						word = line[/^return/]
 						line = line.partition(word).last
 						@tokens << Token.new(:RETURN, word, lineIndex, colIndex)
@@ -177,31 +177,31 @@ class Lexer
 						@tokens << Token.new(:RETURNTYPE, word, lineIndex, colIndex)
 						colIndex += word.size
 	
-					when /^(boolean|number)/
+					when /^(boolean|number)[^a-zA-Z0-9_]/
 						word = line[/^(boolean|number)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:TYPE, word, lineIndex, colIndex)
 						colIndex += word.size
 	
-					when /^(true|false)/
+					when /^(true|false)[^a-zA-Z0-9_]/
 						word = line[/^(true|false)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:BOOLEAN, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^not/
+					when /^not[^a-zA-Z0-9_]/
 						word = line[/^not/]
 						line = line.partition(word).last
 						@tokens << Token.new(:NOT, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(and)/
+					when /^and[^a-zA-Z0-9_]/
 						word = line[/^(and)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:AND, word, lineIndex, colIndex)
 						colIndex += word.size
 	
-					when /^(or)/
+					when /^or[^a-zA-Z0-9_]/
 						word = line[/^(or)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:OR, word, lineIndex, colIndex)
@@ -320,6 +320,7 @@ class Lexer
 		token = @tokens[@cur_token];
 		@cur_token = @cur_token + 1;
 		return token;
+
 	end;
 
 

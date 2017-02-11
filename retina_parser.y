@@ -42,19 +42,19 @@ class Parser
         | FUNC ident LPARENTH RPARENTH BEGINBLK RETURNTYPE TYPE funcinstr ENDBLK SEP
         ;
         
-        declblk
-        : decl declblk
-        |
-        ;
-
         withblk
-        : WITH declblk SEP DO instr ENDBLK
+        : WITH declblk DO instr ENDBLK
         ;
 
         funcwithblk
-        : WITH declblk SEP DO funcinstr ENDBLK
+        : WITH declblk DO funcinstr ENDBLK
         ;
         
+        declblk
+        : decl SEP declblk
+        |
+        ;
+
         iter
         : WHILE expr DO instr ENDBLK 
         | FOR ident FROM expr TO expr BY expr DO instr ENDBLK
@@ -123,8 +123,8 @@ class Parser
         ;
 
         decl
-        : TYPE identlist SEP
-        | TYPE assign SEP
+        : TYPE identlist
+        | TYPE assign
         ;
 
         paramlist
@@ -138,7 +138,7 @@ class Parser
         ;
 
         identlist
-        : ident COLON
+        : ident COLON identlist
         | ident
         ;
 
