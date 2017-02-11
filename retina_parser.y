@@ -21,8 +21,6 @@ class Parser
             BOOLEAN BOOLEANOP NOT EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP 
             SEP COLON MINUS PLUS ARITHMETICOP NUMBER STRING IDENTIFIER
 
-            PROGRAMBLOCK DEF
-
     rule
         
         RETINA
@@ -30,13 +28,13 @@ class Parser
         | DEFBLOCK
         ;
         
+        PROGRAMBLOCK
+        : PROGRAM INSTR ENDBLK SEP
+        ;
+ 
         DEFBLOCK
         : DEF DEFBLOCK
         | 
-        ;
- 
-        PROGRAMBLOCK
-        : PROGRAM INSTR ENDBLK SEP
         ;
 
         DEF
@@ -46,15 +44,52 @@ class Parser
         | FUNC IDENT LPARENTH RPARENTH BEGINBLK RETURNTYPE TYPE FUNCINSTR ENDBLK SEP
         ;
         
-        IDENT
-        : IDENTIFIER
+        DECLBLOCK
+        : DECL DECLBLOCK
+        |
         ;
 
-        PARAMLIST
-        : PARAM COLON PARAMLIST
-        | PARAM
+        WITHBLOCK
+        : WITH DECLBLOCK SEP DO INSTR ENDBLK
+        ;
+
+        FUNCWITHBLOCK
+        : WITH DECLBLOCK SEP DO FUNCINSTR ENDBLK
         ;
         
+        WRITEBLOCK
+        : WRITE PRINTLIST
+        | WRITELN PRINTLIST
+        ;
+
+        READBLOCK
+        : READ IDENT
+        ;
+
+        ITER
+        : WHILE BEXPR DO INSTR ENDBLK 
+        | FOR IDENT FROM AEXPR TO AEXPR BY AEXPR DO INSTR ENDBLK
+        | FOR IDENT FROM AEXPR TO AEXPR DO INSTR ENDBLK
+        | REPEAT AEXPR TIMES INSTR ENDBLK
+        ;
+
+        FUNCITER
+        : WHILE BEXPR DO FUNCINSTR ENDBLK 
+        | FOR IDENT FROM AEXPR TO AEXPR BY AEXPR DO FUNCINSTR ENDBLK
+        | FOR IDENT FROM AEXPR TO AEXPR DO FUNCINSTR ENDBLK
+        | REPEAT AEXPR TIMES FUNCINSTR ENDBLK
+        ;
+
+        COND
+        : IF BEXPR THEN INSTR ENDBLK
+        | IF BEXPR THEN INSTR ELSE INSTR ENDBLK
+        ;
+
+        FUNCCOND
+        : IF BEXPR THEN FUNCINSTR ENDBLK
+        | IF BEXPR THEN FUNCINSTR ELSE FUNCINSTR ENDBLK
+        ;
+
         FUNCINSTR
         : INSTR FUNCINSTR
         | FUNCCOND SEP FUNCINSTR
@@ -63,11 +98,7 @@ class Parser
         | RETURNEXPR SEP FUNCINSTR
         | 
         ;
-        
-        PARAM
-        : TYPE IDENT
-        ;
-        
+
         INSTR
         : EXPR SEP INSTR 
         | ASSIGN SEP INSTR
@@ -78,65 +109,54 @@ class Parser
         | WITHBLOCK SEP INSTR
         | 
         ;
-        
-        FUNCCOND
-        : IF BEXPR THEN FUNCINSTR ENDBLK
-        | IF BEXPR THEN FUNCINSTR ELSE FUNCINSTR ENDBLK
+
+        CALLFUNC
+        : IDENT LPARENTH TERMINALLIST RPARENTH
+        | IDENT LPARENTH RPARENTH
         ;
-        
-        FUNCITER
-        : WHILE BEXPR DO FUNCINSTR ENDBLK 
-        | FOR IDENT FROM AEXPR TO AEXPR BY AEXPR DO FUNCINSTR ENDBLK
-        | FOR IDENT FROM AEXPR TO AEXPR DO FUNCINSTR ENDBLK
-        | REPEAT AEXPR TIMES FUNCINSTR ENDBLK
+
+        DECL
+        : TYPE IDENTLIST SEP
+        | TYPE ASSIGN SEP
         ;
-        
-        FUNCWITHBLOCK
-        : WITH DECLBLOCK SEP DO FUNCINSTR ENDBLK
+
+        PRINTLIST
+        : STR COLON PRINTLIST
+        | EXPR COLON PRINTLIST
         ;
-        
+
+        PARAMLIST
+        : PARAM COLON PARAMLIST
+        | PARAM
+        ;
+
+        TERMINALLIST
+        : TERMINAL COLON TERMINALLIST
+        | TERMINAL
+        ;
+
+        IDENTLIST
+        : IDENT COLON IDENTLIST
+        | IDENT
+        ;
+
+        ASSIGN
+        : IDENT ASSIGNOP EXPR
+        ;
+
         RETURNEXPR 
         : RETURN
         | RETURN EXPR
         ;
-        
+
         EXPR
         : AEXPR
         | BEXPR
         ;
-        
-        ASSIGN
-        : IDENT ASSIGNOP EXPR
-        ;
-        
-        COND
-        : IF BEXPR THEN INSTR ENDBLK
-        | IF BEXPR THEN INSTR ELSE INSTR ENDBLK
-        ;
-        
-        ITER
-        : WHILE BEXPR DO INSTR ENDBLK 
-        | FOR IDENT FROM AEXPR TO AEXPR BY AEXPR DO INSTR ENDBLK
-        | FOR IDENT FROM AEXPR TO AEXPR DO INSTR ENDBLK
-        | REPEAT AEXPR TIMES INSTR ENDBLK
-        ;
-        
-        READBLOCK
-        : READ IDENT
-        ;
-        
-        WRITEBLOCK
-        : WRITE PRINTLIST
-        | WRITELN PRINTLIST
-        ;
-        
-        WITHBLOCK
-        : WITH DECLBLOCK SEP DO INSTR ENDBLK
-        ;
-        
+
         BEXPR
         : BEXPR BOOLEANOP BEXPR
-        | LPARENTH BEXPR RPARENTH  = BPRNTS
+        | LPARENTH BEXPR RPARENTH  =BPRNTS
         | NOT BEXPR
         | EXPR EQUALITYOP EXPR
         | AEXPR ORDEROP AEXPR
@@ -144,60 +164,43 @@ class Parser
         | IDENT
         | CALLFUNC
         ;
-        
+
         AEXPR
         : AEXPR ARITHMETICOP AEXPR
+        | AEXPR PLUS AEXPR
         | AEXPR MINUS AEXPR
-        | LPARENTH AEXPR RPARENTH  = APRNTS
+        | LPARENTH AEXPR RPARENTH   =APRNTS
         | MINUS AEXPR   =UMINUS
         | N
         | IDENT
         | CALLFUNC
         ;
-        
-        DECLBLOCK
-        : DECL DECLBLOCK
-        |
+
+        PARAM
+        : TYPE IDENT
         ;
-        
-        PRINTLIST
-        : STRING COLON PRINTLIST
-        | EXPR COLON PRINTLIST
-        | STRING
-        | EXPR
-        ;
-        
-        B
-        : BOOLEAN
-        ;
-        
-        N
-        : NUMBER
-        ;
-        
-        CALLFUNC
-        : IDENT LPARENTH TERMINALLIST RPARENTH
-        | IDENT LPARENTH RPARENTH
-        ;
-        
-        DECL
-        : TYPE IDENTLIST SEP
-        | TYPE ASSIGN SEP
-        ;
-        
-        TERMINALLIST
-        : B COLON TERMINALLIST
-        | N COLON TERMINALLIST
-        | IDENT COLON TERMINALLIST
-        | B
+
+        TERMINAL
+        : B
         | N
         | IDENT
         ;
-        
-        IDENTLIST
-        : IDENT COLON IDENTLIST
-        | IDENT
-        ;   
+
+        STR
+        : STRING
+        ;
+
+        B
+        : BOOLEAN
+        ;
+
+        N
+        : NUMBER
+        ;
+
+        IDENT
+        : IDENTIFIER
+        ;
 
 end
 
