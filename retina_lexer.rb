@@ -255,10 +255,22 @@ class Lexer
 						@tokens << Token.new(:PLUS, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(\*|\/|%|div|mod)/
-						word = line[/^(\*|\/|%|div|mod)/]
+					when /^(\*)/
+						word = line[/^(\*)/]
 						line = line.partition(word).last
-						@tokens << Token.new(:ARITHMETICOP, word, lineIndex, colIndex)
+						@tokens << Token.new(:MULT, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^(\/|div)/
+						word = line[/^(\/|div)/]
+						line = line.partition(word).last
+						@tokens << Token.new(:DIVISION, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^(%|mod)/
+						word = line[/^(%|mod)/]
+						line = line.partition(word).last
+						@tokens << Token.new(:MODULO, word, lineIndex, colIndex)
 						colIndex += word.size
 
 					when /^([1-9][0-9]*|0)(\.[0-9]+)?/
