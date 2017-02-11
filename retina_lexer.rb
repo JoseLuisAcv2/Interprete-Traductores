@@ -174,7 +174,7 @@ class Lexer
 					when /^->/
 						word = line[/^->/]
 						line = line.partition(word).last
-						@tokens << Token.new(:RETURNOP, word, lineIndex, colIndex)
+						@tokens << Token.new(:RETURNTYPE, word, lineIndex, colIndex)
 						colIndex += word.size
 	
 					when /^(boolean|number)/
@@ -198,7 +198,7 @@ class Lexer
 					when /^(and|or)/
 						word = line[/^(and|or)/]
 						line = line.partition(word).last
-						@tokens << Token.new(:BOP, word, lineIndex, colIndex)
+						@tokens << Token.new(:BOOLEANOP, word, lineIndex, colIndex)
 						colIndex += word.size
 
 					when /^(==|\/=)/
@@ -242,13 +242,25 @@ class Lexer
 						line = line.partition(word).last
 						@tokens << Token.new(:COLON, word, lineIndex, colIndex)
 						colIndex += word.size
+					
+					when /^\-/
+						word = line[/^\-/]
+						line = line.partition(word).last
+						@tokens << Token.new(:MINUS, word, lineIndex, colIndex)
+						colIndex += word.size
 	
-					when /^(\+|-|\*|\/|%|div|mod)/
-						word = line[/^(\+|-|\*|\/|%|div|mod)/]
+					when /^\+/
+						word = line[/^\+/]
+						line = line.partition(word).last
+						@tokens << Token.new(:PLUS, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^(\*|\/|%|div|mod)/
+						word = line[/^(\*|\/|%|div|mod)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:ARITHMETICOP, word, lineIndex, colIndex)
 						colIndex += word.size
-	
+
 					when /^([1-9][0-9]*|0)(\.[0-9]+)?/
 						word = line[/^([1-9][0-9]*|0)(\.[0-9]+)?/]
 						line = line.partition(word).last
