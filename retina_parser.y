@@ -194,8 +194,8 @@ end
 
 ---- header
 
-require_relative "retina_lexer"
-require_relative "retina_ast"
+require_relative "retina_lexer.rb"
+require_relative "retina_ast.rb"
 
 class SyntacticError < RuntimeError
 
@@ -204,11 +204,19 @@ class SyntacticError < RuntimeError
     end
 
     def to_s
-        "Syntactic error on line #{@token.line}, column #{@token.column}: #{@token.value}"   
+        if @token.eql? "$" then
+            "Unexpected EOF"
+        else
+            "Line #{@token.line}, column #{@token.column}: unexpected token #{@token.symbol}: #{@token.value}"   
+        end
     end
 end
 
 ---- inner
+
+def initialize(lexer)
+    @lexer = lexer
+end
 
 def on_error(id, token, stack)
     raise SyntacticError::new(token)
@@ -219,14 +227,10 @@ def next_token
         token = @lexer.next_token;
         return [token.symbol,token]
     else
-        return [false,false];
+        return nil
     end
 end
 
-def parse(lexer)
-    @yydebug = true
-    @lexer = lexer
-    @tokens = []
-    ast = do_parse
-    return ast
+def parse
+    do_parse
 end
