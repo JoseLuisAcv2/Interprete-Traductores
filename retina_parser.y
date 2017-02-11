@@ -1,19 +1,16 @@
 class Parser
 
-
     prechigh
-        
+    
         nonassoc APRNTS BPRNTS
-        nonassoc NOT
-        nonassoc UMINUS
-        left ARITHMETICOP
+        right NOT UMINUS
+        left MULT DIV MOD
         left PLUS MINUS
-        nonassoc ORDEROP
-        right EQUALITYOP
+        nonassoc EQUALITYOP ORDEROP
         left BOOLEANOP
         right ASSIGNOP
         left SEMICOLON
-    
+
     preclow
 
     token   PROGRAM BEGINBLK ENDBLK WITH DO REPEAT TIMES READ WRITE WRITELN 
@@ -23,182 +20,182 @@ class Parser
 
     rule
         
-        RETINA
-        : DEFBLOCK PROGRAMBLOCK
-        | DEFBLOCK
+        retina
+        : defblk programblk
+        | defblk
         ;
         
-        PROGRAMBLOCK
-        : PROGRAM INSTR ENDBLK SEP
+        programblk
+        : PROGRAM instr ENDBLK SEP
         ;
  
-        DEFBLOCK
-        : DEF DEFBLOCK
+        defblk
+        : def defblk
         | 
         ;
 
-        DEF
-        : FUNC IDENT LPARENTH PARAMLIST RPARENTH BEGINBLK FUNCINSTR ENDBLK SEP
-        | FUNC IDENT LPARENTH PARAMLIST RPARENTH RETURNTYPE TYPE BEGINBLK FUNCINSTR ENDBLK SEP
-        | FUNC IDENT LPARENTH RPARENTH BEGINBLK FUNCINSTR ENDBLK SEP
-        | FUNC IDENT LPARENTH RPARENTH BEGINBLK RETURNTYPE TYPE FUNCINSTR ENDBLK SEP
+        def
+        : FUNC ident LPARENTH paramlist RPARENTH BEGINBLK funcinstr ENDBLK SEP
+        | FUNC ident LPARENTH paramlist RPARENTH RETURNTYPE TYPE BEGINBLK funcinstr ENDBLK SEP
+        | FUNC ident LPARENTH RPARENTH BEGINBLK funcinstr ENDBLK SEP
+        | FUNC ident LPARENTH RPARENTH BEGINBLK RETURNTYPE TYPE funcinstr ENDBLK SEP
         ;
         
-        DECLBLOCK
-        : DECL DECLBLOCK
+        declblk
+        : decl declblk
         |
         ;
 
-        WITHBLOCK
-        : WITH DECLBLOCK SEP DO INSTR ENDBLK
+        withblk
+        : WITH declblk SEP DO instr ENDBLK
         ;
 
-        FUNCWITHBLOCK
-        : WITH DECLBLOCK SEP DO FUNCINSTR ENDBLK
+        funcwithblk
+        : WITH declblk SEP DO funcinstr ENDBLK
         ;
         
-        WRITEBLOCK
-        : WRITE PRINTLIST
-        | WRITELN PRINTLIST
+        writeblk
+        : WRITE writelist
+        | WRITELN writelist
         ;
 
-        READBLOCK
-        : READ IDENT
+        readblk
+        : READ ident
         ;
 
-        ITER
-        : WHILE BEXPR DO INSTR ENDBLK 
-        | FOR IDENT FROM AEXPR TO AEXPR BY AEXPR DO INSTR ENDBLK
-        | FOR IDENT FROM AEXPR TO AEXPR DO INSTR ENDBLK
-        | REPEAT AEXPR TIMES INSTR ENDBLK
+        iter
+        : WHILE bexpr DO instr ENDBLK 
+        | FOR ident FROM aexpr TO aexpr BY aexpr DO instr ENDBLK
+        | FOR ident FROM aexpr TO aexpr DO instr ENDBLK
+        | REPEAT aexpr TIMES instr ENDBLK
         ;
 
-        FUNCITER
-        : WHILE BEXPR DO FUNCINSTR ENDBLK 
-        | FOR IDENT FROM AEXPR TO AEXPR BY AEXPR DO FUNCINSTR ENDBLK
-        | FOR IDENT FROM AEXPR TO AEXPR DO FUNCINSTR ENDBLK
-        | REPEAT AEXPR TIMES FUNCINSTR ENDBLK
+        funciter
+        : WHILE bexpr DO funcinstr ENDBLK 
+        | FOR ident FROM aexpr TO aexpr BY aexpr DO funcinstr ENDBLK
+        | FOR ident FROM aexpr TO aexpr DO funcinstr ENDBLK
+        | REPEAT aexpr TIMES funcinstr ENDBLK
         ;
 
-        COND
-        : IF BEXPR THEN INSTR ENDBLK
-        | IF BEXPR THEN INSTR ELSE INSTR ENDBLK
+        cond
+        : IF bexpr THEN instr ENDBLK
+        | IF bexpr THEN instr ELSE instr ENDBLK
         ;
 
-        FUNCCOND
-        : IF BEXPR THEN FUNCINSTR ENDBLK
-        | IF BEXPR THEN FUNCINSTR ELSE FUNCINSTR ENDBLK
+        funccond
+        : IF bexpr THEN funcinstr ENDBLK
+        | IF bexpr THEN funcinstr ELSE funcinstr ENDBLK
         ;
 
-        FUNCINSTR
-        : INSTR FUNCINSTR
-        | FUNCCOND SEP FUNCINSTR
-        | FUNCITER SEP FUNCINSTR
-        | FUNCWITHBLOCK SEP FUNCINSTR 
-        | RETURNEXPR SEP FUNCINSTR
+        funcinstr
+        : instr funcinstr
+        | funccond SEP funcinstr
+        | funciter SEP funcinstr
+        | funcwithblk SEP funcinstr 
+        | returnblk SEP funcinstr
         | 
         ;
 
-        INSTR
-        : EXPR SEP INSTR 
-        | ASSIGN SEP INSTR
-        | COND SEP INSTR
-        | ITER SEP INSTR
-        | READBLOCK SEP INSTR
-        | WRITEBLOCK SEP INSTR
-        | WITHBLOCK SEP INSTR
+        instr
+        : expr SEP instr 
+        | assign SEP instr
+        | cond SEP instr
+        | iter SEP instr
+        | readblk SEP instr
+        | writeblk SEP instr
+        | withblk SEP instr
         | 
         ;
 
-        CALLFUNC
-        : IDENT LPARENTH TERMINALLIST RPARENTH
-        | IDENT LPARENTH RPARENTH
+        callfunc
+        : ident LPARENTH termlist RPARENTH
+        | ident LPARENTH RPARENTH
         ;
 
-        DECL
-        : TYPE IDENTLIST SEP
-        | TYPE ASSIGN SEP
+        decl
+        : TYPE identlist SEP
+        | TYPE assign SEP
         ;
 
-        PRINTLIST
-        : STR COLON PRINTLIST
-        | EXPR COLON PRINTLIST
+        writelist
+        : str COLON writelist
+        | expr COLON writelist
         ;
 
-        PARAMLIST
-        : PARAM COLON PARAMLIST
-        | PARAM
+        paramlist
+        : param COLON paramlist
+        | param
         ;
 
-        TERMINALLIST
-        : TERMINAL COLON TERMINALLIST
-        | TERMINAL
+        termlist
+        : terminal COLON termlist
+        | terminal
         ;
 
-        IDENTLIST
-        : IDENT COLON IDENTLIST
-        | IDENT
+        identlist
+        : ident COLON identlist
+        | ident
         ;
 
-        ASSIGN
-        : IDENT ASSIGNOP EXPR
+        assign
+        : ident ASSIGNOP expr
         ;
 
-        RETURNEXPR 
+        returnblk 
         : RETURN
-        | RETURN EXPR
+        | RETURN expr
         ;
 
-        EXPR
-        : AEXPR
-        | BEXPR
+        expr
+        : aexpr
+        | bexpr
         ;
 
-        BEXPR
-        : BEXPR BOOLEANOP BEXPR
-        | LPARENTH BEXPR RPARENTH  =BPRNTS
-        | NOT BEXPR
-        | EXPR EQUALITYOP EXPR
-        | AEXPR ORDEROP AEXPR
-        | B
-        | IDENT
-        | CALLFUNC
+        bexpr
+        : bexpr BOOLEANOP bexpr
+        | LPARENTH bexpr RPARENTH  =BPRNTS
+        | NOT bexpr
+        | expr EQUALITYOP expr
+        | aexpr ORDEROP aexpr
+        | b
+        | ident
+        | callfunc
         ;
 
-        AEXPR
-        : AEXPR ARITHMETICOP AEXPR
-        | AEXPR PLUS AEXPR
-        | AEXPR MINUS AEXPR
-        | LPARENTH AEXPR RPARENTH   =APRNTS
-        | MINUS AEXPR   =UMINUS
-        | N
-        | IDENT
-        | CALLFUNC
+        aexpr
+        : aexpr ARITHMETICOP aexpr
+        | aexpr PLUS aexpr
+        | aexpr MINUS aexpr
+        | LPARENTH aexpr RPARENTH   =APRNTS
+        | MINUS aexpr   =UMINUS
+        | n
+        | ident
+        | callfunc
         ;
 
-        PARAM
-        : TYPE IDENT
+        param
+        : TYPE ident
         ;
 
-        TERMINAL
-        : B
-        | N
-        | IDENT
+        terminal
+        : b
+        | n
+        | ident
         ;
 
-        STR
+        str
         : STRING
         ;
 
-        B
+        b
         : BOOLEAN
         ;
 
-        N
+        n
         : NUMBER
         ;
 
-        IDENT
+        ident
         : IDENTIFIER
         ;
 
