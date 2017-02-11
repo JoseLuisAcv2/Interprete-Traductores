@@ -2,12 +2,13 @@ class Parser
 
     prechigh
     
-        nonassoc APRNTS BPRNTS
+        nonassoc PRNTS
         right NOT UMINUS
         left MULT DIV MOD
         left PLUS MINUS
         nonassoc EQUALITYOP ORDEROP
-        left BOOLEANOP
+        left AND
+        left OR
         right ASSIGNOP
         left SEMICOLON
 
@@ -15,8 +16,8 @@ class Parser
 
     token   PROGRAM BEGINBLK ENDBLK WITH DO REPEAT TIMES READ WRITE WRITELN 
             IF THEN ELSE WHILE FOR FROM TO BY FUNC RETURN RETURNTYPE TYPE 
-            BOOLEAN BOOLEANOP NOT EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP 
-            SEP COLON MINUS PLUS ARITHMETICOP NUMBER STRING IDENTIFIER
+            EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP SEP COLON 
+            MINUS PLUS MULT DIV MOD AND OR NOT BOOLEAN NUMBER STRING IDENTIFIER 
 
     rule
         
@@ -30,11 +31,11 @@ class Parser
         ;
  
         defblk
-        : def defblk
+        : funcdef defblk
         | 
         ;
 
-        def
+        funcdef
         : FUNC ident LPARENTH paramlist RPARENTH BEGINBLK funcinstr ENDBLK SEP
         | FUNC ident LPARENTH paramlist RPARENTH RETURNTYPE TYPE BEGINBLK funcinstr ENDBLK SEP
         | FUNC ident LPARENTH RPARENTH BEGINBLK funcinstr ENDBLK SEP
@@ -54,61 +55,70 @@ class Parser
         : WITH declblk SEP DO funcinstr ENDBLK
         ;
         
+        iter
+        : WHILE expr DO instr ENDBLK 
+        | FOR ident FROM expr TO expr BY expr DO instr ENDBLK
+        | FOR ident FROM expr TO expr DO instr ENDBLK
+        | REPEAT expr TIMES instr ENDBLK
+        ;
+
+        funciter
+        : WHILE expr DO funcinstr ENDBLK 
+        | FOR ident FROM expr TO expr BY expr DO funcinstr ENDBLK
+        | FOR ident FROM expr TO expr DO funcinstr ENDBLK
+        | REPEAT expr TIMES funcinstr ENDBLK
+        ;
+
+        cond
+        : IF expr THEN instr ENDBLK
+        | IF expr THEN instr ELSE instr ENDBLK
+        ;
+
+        funccond
+        : IF expr THEN funcinstr ENDBLK
+        | IF expr THEN funcinstr ELSE funcinstr ENDBLK
+        ;
+
+        instr
+        : instr expr SEP
+        | instr assign SEP
+        | instr cond SEP
+        | instr iter SEP
+        | instr withblk SEP
+        | instr readblk SEP
+        | instr writeblk SEP
+        | 
+        ;
+
+        funcinstr
+        : funcinstr expr SEP
+        | funcinstr assign SEP   
+        | funcinstr funccond SEP
+        | funcinstr funciter SEP
+        | funcinstr funcwithblk SEP 
+        | funcinstr returnblk SEP       
+        |
+        ;
+
         writeblk
-        : WRITE writelist
-        | WRITELN writelist
+        : WRITE writelist str
+        | WRITE writelist expr
+        | WRITELN writelist str
+        | WRITELN writelist expr
+        ;
+
+        writelist
+        : writelist str COLON
+        | writelist expr COLON
+        |
         ;
 
         readblk
         : READ ident
         ;
 
-        iter
-        : WHILE bexpr DO instr ENDBLK 
-        | FOR ident FROM aexpr TO aexpr BY aexpr DO instr ENDBLK
-        | FOR ident FROM aexpr TO aexpr DO instr ENDBLK
-        | REPEAT aexpr TIMES instr ENDBLK
-        ;
-
-        funciter
-        : WHILE bexpr DO funcinstr ENDBLK 
-        | FOR ident FROM aexpr TO aexpr BY aexpr DO funcinstr ENDBLK
-        | FOR ident FROM aexpr TO aexpr DO funcinstr ENDBLK
-        | REPEAT aexpr TIMES funcinstr ENDBLK
-        ;
-
-        cond
-        : IF bexpr THEN instr ENDBLK
-        | IF bexpr THEN instr ELSE instr ENDBLK
-        ;
-
-        funccond
-        : IF bexpr THEN funcinstr ENDBLK
-        | IF bexpr THEN funcinstr ELSE funcinstr ENDBLK
-        ;
-
-        funcinstr
-        : instr funcinstr
-        | funccond SEP funcinstr
-        | funciter SEP funcinstr
-        | funcwithblk SEP funcinstr 
-        | returnblk SEP funcinstr
-        | 
-        ;
-
-        instr
-        : expr SEP instr 
-        | assign SEP instr
-        | cond SEP instr
-        | iter SEP instr
-        | readblk SEP instr
-        | writeblk SEP instr
-        | withblk SEP instr
-        | 
-        ;
-
         callfunc
-        : ident LPARENTH termlist RPARENTH
+        : ident LPARENTH arglist RPARENTH
         | ident LPARENTH RPARENTH
         ;
 
@@ -117,23 +127,18 @@ class Parser
         | TYPE assign SEP
         ;
 
-        writelist
-        : str COLON writelist
-        | expr COLON writelist
-        ;
-
         paramlist
         : param COLON paramlist
         | param
         ;
 
-        termlist
-        : terminal COLON termlist
-        | terminal
+        arglist
+        : expr COLON arglist
+        | expr
         ;
 
         identlist
-        : ident COLON identlist
+        : ident COLON
         | ident
         ;
 
@@ -147,27 +152,19 @@ class Parser
         ;
 
         expr
-        : aexpr
-        | bexpr
-        ;
-
-        bexpr
-        : bexpr BOOLEANOP bexpr
-        | LPARENTH bexpr RPARENTH  =BPRNTS
-        | NOT bexpr
+        : expr AND expr
+        | expr OR expr
+        | NOT expr
         | expr EQUALITYOP expr
-        | aexpr ORDEROP aexpr
+        | expr ORDEROP expr
+        | expr MULT expr
+        | expr DIV expr
+        | expr MOD expr
+        | expr PLUS expr
+        | expr MINUS expr
+        | MINUS expr =UMINUS
+        | LPARENTH expr RPARENTH =PRNTS
         | b
-        | ident
-        | callfunc
-        ;
-
-        aexpr
-        : aexpr ARITHMETICOP aexpr
-        | aexpr PLUS aexpr
-        | aexpr MINUS aexpr
-        | LPARENTH aexpr RPARENTH   =APRNTS
-        | MINUS aexpr   =UMINUS
         | n
         | ident
         | callfunc
@@ -175,12 +172,6 @@ class Parser
 
         param
         : TYPE ident
-        ;
-
-        terminal
-        : b
-        | n
-        | ident
         ;
 
         str
