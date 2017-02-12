@@ -136,7 +136,7 @@ class Paramlist_node < AST_node
     end
 
     def print_ast(ind)
-        @param.print_ast(ind)
+        @param.print_ast(ind) unless @param.nil?
         @paramlist.print_ast(ind) unless @paramlist.nil?
     end
 end
@@ -228,6 +228,8 @@ class Logical_un_expr_node < Un_expr_node;
     def print_ast(ind)
         indent(ind)
         puts "#{@operator}:"
+        indent(ind+1)
+        puts "OPERAND:"
         @operand.print_ast(ind+2)
     end
 end
@@ -260,6 +262,8 @@ class Arith_un_expr_node < Un_expr_node;
     def print_ast(ind)
         indent(ind)
         puts "#{@operator}:"
+        indent(ind+1)
+        puts "OPERAND:"
         @operand.print_ast(ind+2)
     end
 end

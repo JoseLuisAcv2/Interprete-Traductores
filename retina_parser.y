@@ -107,6 +107,8 @@ class Parser
         | funcinstr funccond SEP            {result = Instrlist_node.new(val[0],val[1])}
         | funcinstr funciter SEP            {result = Instrlist_node.new(val[0],val[1])}
         | funcinstr funcwithblk SEP         {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr readblk SEP             {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr writeblk SEP            {result = Instrlist_node.new(val[0],val[1])}
         | funcinstr returnblk SEP           {result = Instrlist_node.new(val[0],val[1])}
         | funcinstr SEP                     {result = Instrlist_node.new(val[0],nil)}
         |                                   {result = Instrlist_node.new(nil,nil)}
