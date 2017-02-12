@@ -1,3 +1,8 @@
+func prueba() -> boolean begin
+	b = true;
+	return x;
+	end;
+
 program
 	with
 	    number i;

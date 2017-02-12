@@ -77,7 +77,7 @@ class Funcdef_node < Instruction_node
         @type.print_ast(ind+1)
         indent(ind)
         puts "\tPARAMETER LIST:"
-        @paramlist.print_ast(ind+2)
+        @paramlist.print_ast(ind+2) unless @paramlist.nil?
         indent(ind)
         puts "\tINSTRUCTION BLOCK:"
         @instrlist.print_ast(ind+2)
