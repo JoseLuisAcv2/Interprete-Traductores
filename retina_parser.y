@@ -1,3 +1,13 @@
+# *
+# *     Traductores e Interpretadores CI-3725
+# *
+# *     Proyecto Fase 2 - Parser
+# *
+# *     Autores:
+# *                 - Jose Acevedo      13-10006
+# *                 - Edwar Yepez       12-10855
+# *
+
 class Parser
 
     prechigh
