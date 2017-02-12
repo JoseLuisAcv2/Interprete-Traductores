@@ -5,9 +5,9 @@
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
-#               - Edwar Yepez       12-10855
 #
 
+# Superclass of any element that belong to the AST
 class AST_node;
     def indent(ind)
         for i in 1..ind
@@ -16,11 +16,13 @@ class AST_node;
     end
 end
 
+# Definition of basis types of node in the AST
 class Instruction_node < AST_node;end
 class Expression_node < AST_node;end
 class Bin_expr_node < AST_node;end
 class Un_expr_node < AST_node;end
 
+# Definition of root node an print_ast method
 class S_node < AST_node
     def initialize(defblk = nil, programblk = nil)
         @ind = 0
@@ -38,6 +40,7 @@ class S_node < AST_node
     end
 end
 
+# Definition of a program block node
 class Programblk_node < AST_node
     def initialize(instrlist)
         @instrlist = instrlist
@@ -50,6 +53,7 @@ class Programblk_node < AST_node
     end
 end
 
+# Definition of a definitions block node
 class Defblk_node < AST_node
     def initialize(funcdef, defblk)
         @funcdef = funcdef
@@ -63,6 +67,7 @@ class Defblk_node < AST_node
     end
 end
 
+# Definition of a function declaration node
 class Funcdef_node < Instruction_node
     def initialize(ident, paramlist, type, instrlist)
         @ident = ident
@@ -85,6 +90,7 @@ class Funcdef_node < Instruction_node
     end
 end
 
+# Definition of identifier node
 class Identifier_node < Expression_node
     def initialize(name)
         @name = name
@@ -96,6 +102,7 @@ class Identifier_node < Expression_node
     end
 end
 
+# Definition of a boolean node
 class Boolean_node < Expression_node
     def initialize(value)
         @value = value
@@ -107,6 +114,7 @@ class Boolean_node < Expression_node
     end
 end
 
+# Definition of a number node
 class Number_node < Expression_node
     def initialize(value)
         @value = value
@@ -118,6 +126,7 @@ class Number_node < Expression_node
     end
 end
 
+# Definition of a string node
 class String_node < Expression_node
     def initialize(value)
         @value = value
@@ -129,6 +138,7 @@ class String_node < Expression_node
     end
 end
 
+# Definition of a parameters list node
 class Paramlist_node < AST_node
     def initialize(param, paramlist)
         @param = param
@@ -141,6 +151,7 @@ class Paramlist_node < AST_node
     end
 end
 
+# Definition of a parameter node
 class Param_node < AST_node
     def initialize(type, ident)
         @type = type
@@ -155,6 +166,7 @@ class Param_node < AST_node
     end
 end
 
+# Definition of a type node
 class Type_node < AST_node
     def initialize(type)
         @type = type
@@ -171,6 +183,7 @@ class Type_node < AST_node
     end
 end
 
+# Definition of a instruction list node
 class Instrlist_node < AST_node
     def initialize(nxt_instr, instr)
         @nxt_instr = nxt_instr
@@ -183,6 +196,7 @@ class Instrlist_node < AST_node
     end
 end
 
+# Definition of a return node
 class Return_node < Instruction_node
     def initialize(expr)
         @expr = expr
@@ -200,6 +214,7 @@ class Return_node < Instruction_node
     end
 end
 
+# Definition of a logical binary expression node
 class Logical_bin_expr_node < Bin_expr_node;
     def initialize(left, right, op)
         @left = left
@@ -219,6 +234,7 @@ class Logical_bin_expr_node < Bin_expr_node;
     end
 end
 
+# Definition of a unary logical expression node
 class Logical_un_expr_node < Un_expr_node;
     def initialize(operand, operator)
         @operand = operand
@@ -234,6 +250,7 @@ class Logical_un_expr_node < Un_expr_node;
     end
 end
 
+# Definition of a arithmethic binary expression node
 class Arith_bin_expr_node < Bin_expr_node;
     def initialize(left, right, op)
         @left = left
@@ -253,6 +270,7 @@ class Arith_bin_expr_node < Bin_expr_node;
     end
 end
 
+# Definition of a arithmethic unary expression node
 class Arith_un_expr_node < Un_expr_node;
     def initialize(operand, operator)
         @operand = operand
@@ -268,6 +286,7 @@ class Arith_un_expr_node < Un_expr_node;
     end
 end
 
+# Definition of a comparator expression node
 class Comp_expr_node < Bin_expr_node;
     def initialize(left, right, op)
         @left = left
@@ -287,6 +306,7 @@ class Comp_expr_node < Bin_expr_node;
     end
 end
 
+# Definition of a function call node
 class Callfunc_node < Expression_node
     def initialize(ident, arglist)
         @ident = ident
@@ -308,6 +328,7 @@ class Callfunc_node < Expression_node
     end
 end
 
+# Definition of a argument list node
 class Arglist_node < AST_node
     def initialize(arg, arglist)
         @arg = arg
@@ -320,6 +341,7 @@ class Arglist_node < AST_node
     end
 end
 
+# Definition of a assign instruction node
 class Assignop_node < Instruction_node
     def initialize(ident, expr)
         @ident = ident
@@ -338,6 +360,7 @@ class Assignop_node < Instruction_node
     end
 end
 
+# Definition of a with-do block node
 class Withblk_node < Instruction_node
     def initialize(declist, instrlist)
         @declist = declist
@@ -357,6 +380,7 @@ class Withblk_node < Instruction_node
     end
 end
 
+# Definition of a declarations list node
 class Declist_node < AST_node
     def initialize(nxt_decl, decl)
         @nxt_decl = nxt_decl
@@ -369,6 +393,7 @@ class Declist_node < AST_node
     end
 end
 
+# Definition of a identifier list node
 class Identlist_node < AST_node
     def initialize(nxt_ident, ident)
         @nxt_ident = nxt_ident
@@ -381,6 +406,7 @@ class Identlist_node < AST_node
     end
 end
 
+# Definition of a declaration node
 class Decl_node < Instruction_node
     def initialize(type, assign, identlist)
         @type = type
@@ -402,6 +428,7 @@ class Decl_node < Instruction_node
     end
 end
 
+# Definition of a while node
 class While_loop_node < Instruction_node
     def initialize(expr, instrlist)
         @expr = expr
@@ -420,6 +447,7 @@ class While_loop_node < Instruction_node
     end
 end
 
+# Definition of a for node
 class For_loop_node < Instruction_node
     def initialize(counter, lower_bound, upper_bound, increment, instrlist)
         @counter = counter
@@ -450,6 +478,7 @@ class For_loop_node < Instruction_node
     end
 end
 
+# Definition of a for with increment node
 class For_loop_const_node < Instruction_node
     def initialize(counter, lower_bound, upper_bound, instrlist)
         @counter = counter
@@ -476,6 +505,7 @@ class For_loop_const_node < Instruction_node
     end
 end
 
+# Definition of a repeat node
 class Repeat_loop_node < Instruction_node
     def initialize(expr, instrlist)
         @expr = expr
@@ -494,6 +524,7 @@ class Repeat_loop_node < Instruction_node
     end
 end
 
+# Definition of a conditional node
 class If_node < Instruction_node
     def initialize(cond, instrlist1, instrlist2)
         @cond = cond
@@ -518,6 +549,7 @@ class If_node < Instruction_node
     end
 end
 
+# Definition of a write node
 class Write_node < Instruction_node
     def initialize(writelist, lastitem, newline = false)
         @writelist = writelist
@@ -539,6 +571,7 @@ class Write_node < Instruction_node
     end
 end
 
+# Definition of a write list node
 class Writelist_node < AST_node
     def initialize(nxt_write, cur_write)
         @nxt_write = nxt_write
@@ -551,6 +584,7 @@ class Writelist_node < AST_node
     end
 end
 
+# Definition of a read node
 class Read_node < Instruction_node
     def initialize(ident)
         @ident = ident

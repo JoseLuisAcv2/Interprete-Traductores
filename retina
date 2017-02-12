@@ -6,9 +6,9 @@
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
-# 				- Edwar Yepez 		12-10855
 #
 
+# Import dependencies
 require_relative 'retina_lexer'
 require_relative 'retina_parser'
 
@@ -16,34 +16,35 @@ def main
 
 	#Check file was given
 	if ARGV[0].nil? then
-		puts "Enter Retina file.";
-		return;
-	end;
+		puts "Enter Retina file."
+		return
+	end
 
 	# Check file exists
 	if not File.file?(ARGV[0]) then
-		puts "File does not exist.";
-		return;
-	end;
+		puts "File does not exist."
+		return
+	end
 
 	# Check '.rtn' file extension
-	ARGV[0] =~ /\w+\.rtn/;
+	ARGV[0] =~ /\w+\.rtn/
 	if $&.nil? then
-		puts "Invalid file extension.";
-		return;
-	end;
+		puts "Invalid file extension."
+		return
+	end
 
-	input = ARGV[0];
+	# Creates lexer and obtains tokens found in rtn file
+	lexer = Lexer.new ARGV[0]
+	lexer.get_tokens
 
-	# Create lexer
-	lexer = Lexer.new input;
-	lexer.get_tokens;
-
+	# In case of lexicographic errors, prints those errors and finish program
 	if lexer.has_lexicographic_errors then
-		lexer.print_lexicographic_errors;
-		return;
-	end;
+		lexer.print_lexicographic_errors
+		return
+	end
 
+	# Creates parser for the given file and print the abstract sintact tree in case
+	# parse had done successfully or prints unexpected token otherwise
 	begin
 		parser = Parser.new lexer
 		ast = parser.parse
