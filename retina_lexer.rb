@@ -207,18 +207,42 @@ class Lexer
 						@tokens << Token.new(:OR, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(==|\/=)/
-						word = line[/^(==|\/=)/]
+					when /^==/
+						word = line[/^==/]
 						line = line.partition(word).last
-						@tokens << Token.new(:EQUALITYOP, word, lineIndex, colIndex)
+						@tokens << Token.new(:EQOP, word, lineIndex, colIndex)
 						colIndex += word.size
-	
-					when /^(>=?|<=?)/
-						word = line[/^(>=?|<=?)/]
+
+					when /^\/=/
+						word = line[/^\/=/]
 						line = line.partition(word).last
-						@tokens << Token.new(:ORDEROP, word, lineIndex, colIndex)
+						@tokens << Token.new(:INEQOP, word, lineIndex, colIndex)
 						colIndex += word.size
-	
+					
+					when /^>=/
+						word = line[/^>=/]
+						line = line.partition(word).last
+						@tokens << Token.new(:GEOP, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^>/
+						word = line[/^>/]
+						line = line.partition(word).last
+						@tokens << Token.new(:GTOP, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^<=/
+						word = line[/^<=/]
+						line = line.partition(word).last
+						@tokens << Token.new(:LEOP, word, lineIndex, colIndex)
+						colIndex += word.size						
+
+					when /^</
+						word = line[/^</]
+						line = line.partition(word).last
+						@tokens << Token.new(:LTOP, word, lineIndex, colIndex)
+						colIndex += word.size
+
 					when /^\(/
 						word = line[/^\(/]
 						line = line.partition(word).last
@@ -267,16 +291,28 @@ class Lexer
 						@tokens << Token.new(:MULT, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(\/|div[^a-zA-Z0-9_])/
-						word = line[/^(\/|div)/]
+					when /^\//
+						word = line[/^\//]
 						line = line.partition(word).last
 						@tokens << Token.new(:DIV, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(%|mod[^a-zA-Z0-9_])/
-						word = line[/^(%|mod)/]
+					when /^div[^a-zA-Z0-9_]/
+						word = line[/^div/]
+						line = line.partition(word).last
+						@tokens << Token.new(:INTDIV, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^%/
+						word = line[/^%/]
 						line = line.partition(word).last
 						@tokens << Token.new(:MOD, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^mod[^a-zA-Z0-9_]/
+						word = line[/^mod/]
+						line = line.partition(word).last
+						@tokens << Token.new(:INTMOD, word, lineIndex, colIndex)
 						colIndex += word.size
 
 					when /^([1-9][0-9]*|0)(\.[0-9]+)?/

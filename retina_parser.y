@@ -4,38 +4,35 @@ class Parser
     
         nonassoc PRNTS
         right NOT UMINUS
-        left MULT DIV MOD
+        left MULT DIV INTDIV MOD INTMOD
         left PLUS MINUS
-        nonassoc EQUALITYOP ORDEROP
+        nonassoc EQOP INEQOP GTOP GEOP LTOP LEOP
         left AND
         left OR
-        right ASSIGNOP
-        left COLON
-        left SEMICOLON
+        nonassoc ASSIGNOP
+        nonassoc COLON
+        nonassoc SEMICOLON
 
     preclow
 
     token   PROGRAM BEGINBLK ENDBLK WITH DO REPEAT TIMES READ WRITE WRITELN 
             IF THEN ELSE WHILE FOR FROM TO BY FUNC RETURN RETURNTYPE TYPE 
-            EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP SEP COLON 
-            MINUS PLUS MULT DIV MOD AND OR NOT BOOLEAN NUMBER STRING IDENTIFIER 
+            EQOP INEQOP GTOP GEOP LTOP LEOP LPARENTH RPARENTH ASSIGNOP SEP COLON 
+            MINUS PLUS MULT DIV INTDIV MOD INTMOD AND OR NOT BOOLEAN NUMBER STRING IDENTIFIER 
     rule
-
-        r
-        : retina
-        ;
         
         S
         : defblk programblk             {result = S_node.new(val[0],val[1])}
+        | programblk                    {result = S_node.new(nil,val[0])}
         ;
         
         programblk
-        : PROGRAM instr ENDBLK SEP      {result = Programblk_node.new()}
+        : PROGRAM instr ENDBLK SEP      {result = Programblk_node.new(val[1])}
         ;
  
         defblk
         : funcdef defblk                {result = Defblk_node.new(val[0],val[1])}
-        | 
+        | funcdef                       {result = Defblk_node.new(val[0],nil)}
         ;
 
         funcdef
@@ -46,133 +43,139 @@ class Parser
         ;
         
         withblk
-        : WITH declblk DO instr ENDBLK
+        : WITH declblk DO instr ENDBLK      {result = Withblk_node.new(val[1],val[3])}
         ;
 
         funcwithblk
-        : WITH declblk DO funcinstr ENDBLK
+        : WITH declblk DO funcinstr ENDBLK  {result = Withblk_node.new(val[1],val[3])}
         ;
         
         declblk
-        : decl SEP declblk
-        |
+        : decl SEP declblk                  {result = Declist_node.new(val[0],val[2])}
+        |                                   {result = Declist_node.new(nil,nil)}
         ;
 
         iter
-        : WHILE expr DO instr ENDBLK 
-        | FOR ident FROM expr TO expr BY expr DO instr ENDBLK
-        | FOR ident FROM expr TO expr DO instr ENDBLK
-        | REPEAT expr TIMES instr ENDBLK
+        : WHILE expr DO instr ENDBLK                                {result = While_loop_node.new(val[1],val[3])}
+        | FOR ident FROM expr TO expr BY expr DO instr ENDBLK       {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])}
+        | FOR ident FROM expr TO expr DO instr ENDBLK               {result = For_loop_const_node.new(val[1],val[3],val[5],val[7])}
+        | REPEAT expr TIMES instr ENDBLK                            {result = Repeat_loop_node.new(val[1],val[3])}
         ;
 
         funciter
-        : WHILE expr DO funcinstr ENDBLK 
-        | FOR ident FROM expr TO expr BY expr DO funcinstr ENDBLK
-        | FOR ident FROM expr TO expr DO funcinstr ENDBLK
-        | REPEAT expr TIMES funcinstr ENDBLK
+        : WHILE expr DO funcinstr ENDBLK                            {result = While_loop_node.new(val[1],val[3])}
+        | FOR ident FROM expr TO expr BY expr DO funcinstr ENDBLK   {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])}
+        | FOR ident FROM expr TO expr DO funcinstr ENDBLK           {result = For_loop_const_node.new(val[1],val[3],val[5],val[7])}
+        | REPEAT expr TIMES funcinstr ENDBLK                        {result = Repeat_loop_node.new(val[1],val[3])}
         ;
 
         cond
-        : IF expr THEN instr ENDBLK
-        | IF expr THEN instr ELSE instr ENDBLK
+        : IF expr THEN instr ENDBLK                                 {result = If_node.new(val[1],val[3],nil)}
+        | IF expr THEN instr ELSE instr ENDBLK                      {result = If_node.new(val[1],val[3],val[5])}
         ;
 
         funccond
-        : IF expr THEN funcinstr ENDBLK
-        | IF expr THEN funcinstr ELSE funcinstr ENDBLK
+        : IF expr THEN funcinstr ENDBLK                             {result = If_node.new(val[1],val[3],nil)}
+        | IF expr THEN funcinstr ELSE funcinstr ENDBLK              {result = If_node.new(val[1],val[3],val[5])}
         ;
 
         instr
-        : instr expr SEP                {result = Instrlist_node.new(val[0],val[1])}
-        | instr assign SEP              {result = Instrlist_node.new(val[0],val[1])}
-        | instr cond SEP                {result = Instrlist_node.new(val[0],val[1])}
-        | instr iter SEP                {result = Instrlist_node.new(val[0],val[1])}
-        | instr withblk SEP             {result = Instrlist_node.new(val[0],val[1])}
-        | instr readblk SEP             {result = Instrlist_node.new(val[0],val[1])}
-        | instr writeblk SEP            {result = Instrlist_node.new(val[0],val[1])}
-        | instr SEP                     {result = Instrlist_node.new(val[0],nil)}
-        |                               {result = Instrlist_node.new(nil,nil)}
+        : instr expr SEP                    {result = Instrlist_node.new(val[0],val[1])}
+        | instr assign SEP                  {result = Instrlist_node.new(val[0],val[1])}
+        | instr cond SEP                    {result = Instrlist_node.new(val[0],val[1])}
+        | instr iter SEP                    {result = Instrlist_node.new(val[0],val[1])}
+        | instr withblk SEP                 {result = Instrlist_node.new(val[0],val[1])}
+        | instr readblk SEP                 {result = Instrlist_node.new(val[0],val[1])}
+        | instr writeblk SEP                {result = Instrlist_node.new(val[0],val[1])}
+        | instr SEP                         {result = Instrlist_node.new(val[0],nil)}
+        |                                   {result = Instrlist_node.new(nil,nil)}
         ;
 
         funcinstr
-        : funcinstr expr SEP            {result = Instrlist_node.new(val[0],val[1])}
-        | funcinstr assign SEP          {result = Instrlist_node.new(val[0],val[1])}
-        | funcinstr funccond SEP        {result = Instrlist_node.new(val[0],val[1])}
-        | funcinstr funciter SEP        {result = Instrlist_node.new(val[0],val[1])}
-        | funcinstr funcwithblk SEP     {result = Instrlist_node.new(val[0],val[1])}
-        | funcinstr returnblk SEP       {result = Instrlist_node.new(val[0],val[1])}
-        | funcinstr SEP                 {result = Instrlist_node.new(val[0],nil)}
-        |                               {result = Instrlist_node.new(nil,nil)}
+        : funcinstr expr SEP                {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr assign SEP              {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr funccond SEP            {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr funciter SEP            {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr funcwithblk SEP         {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr returnblk SEP           {result = Instrlist_node.new(val[0],val[1])}
+        | funcinstr SEP                     {result = Instrlist_node.new(val[0],nil)}
+        |                                   {result = Instrlist_node.new(nil,nil)}
         ;
 
         writeblk
-        : WRITE writelist str
-        | WRITE writelist expr
-        | WRITELN writelist str
-        | WRITELN writelist expr
+        : WRITE writelist str               {result = Write_node.new(val[1],val[2])}
+        | WRITE writelist expr              {result = Write_node.new(val[1],val[2])}
+        | WRITELN writelist str             {result = Write_node.new(val[1],val[2],true)}
+        | WRITELN writelist expr            {result = Write_node.new(val[1],val[2],true)}
         ;
 
         writelist
-        : writelist str COLON
-        | writelist expr COLON
-        |
+        : writelist str COLON               {result = Writelist_node.new(val[0],val[1])}
+        | writelist expr COLON              {result = Writelist_node.new(val[0],val[1])}
+        |                                   {result = Writelist_node.new(nil,nil)}
         ;
 
         readblk
-        : READ ident
+        : READ ident                        {result = Read_node.new(val[1])}
         ;
 
         callfunc
-        : ident LPARENTH arglist RPARENTH
-        | ident LPARENTH RPARENTH
+        : ident LPARENTH arglist RPARENTH   {result = Callfunc_node.new(val[0],val[2])}
+        | ident LPARENTH RPARENTH           {result = Callfunc_node.new(val[0],nil)}
         ;
 
         decl
-        : datatype identlist
-        | datatype assign
+        : datatype identlist                {result = Decl_node.new(val[0],nil,val[1])}
+        | datatype assign                   {result = Decl_node.new(val[0],val[1],nil)}
         ;
 
         paramlist
-        : param COLON paramlist     {result = Paramlist_node.new(val[0],val[2])}
-        | param                     {result = Paramlist_node.new(val[0],nil)}
+        : param COLON paramlist             {result = Paramlist_node.new(val[0],val[2])}
+        | param                             {result = Paramlist_node.new(val[0],nil)}
         ;
 
         arglist
-        : expr COLON arglist
-        | expr
+        : expr COLON arglist                {result = Arglist_node.new(val[0],val[2])}
+        | expr                              {result = Arglist_node.new(val[0],nil)}
         ;
 
         identlist
-        : ident COLON identlist
-        | ident
+        : ident COLON identlist             {result = Identlist_node.new(val[0],val[2])}
+        | ident                             {result = Identlist_node.new(val[0],nil)}
         ;
 
         assign
-        : ident ASSIGNOP expr
+        : ident ASSIGNOP expr               {result = Assignop_node.new(val[0],val[2])}
         ;
 
         returnblk
-        : RETURN                       {result = Return_node.new(nil)}
-        | RETURN expr                  {result = Return_node.new(val[0])}
+        : RETURN                            {result = Return_node.new(nil)}
+        | RETURN expr                       {result = Return_node.new(val[1])}
         ;
 
         expr
-        : expr AND expr                 {result = Expression_node.new(val[0],val[1],val[2])}
-        | expr OR expr                  {result = Expression_node.new(val[0],val[1],val[2])}
-        | NOT expr                      {result = Expression_node.new(val[0],val[1],val[2])}
-        | expr EQUALITYOP expr
-        | expr ORDEROP expr
-        | expr MULT expr
-        | expr DIV expr
-        | expr MOD expr
-        | expr PLUS expr
-        | expr MINUS expr
-        | MINUS expr =UMINUS
-        | LPARENTH expr RPARENTH =PRNTS
-        | b
-        | n
-        | ident
-        | callfunc
+        : expr AND expr                     {result = Logical_bin_expr_node.new(val[0],val[2],'CONJUNCTION')}
+        | expr OR expr                      {result = Logical_bin_expr_node.new(val[0],val[2],'DISJUNCTION')}
+        | NOT expr                          {result = Logical_un_expr_node.new(val[1],'LOGICAL NEGATION')}
+        | expr EQOP expr                    {result = Comp_expr_node.new(val[0],val[2],'EQUALITY')}
+        | expr INEQOP expr                  {result = Comp_expr_node.new(val[0],val[2],'INEQUALITY')}
+        | expr GTOP expr                    {result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN')}
+        | expr GEOP expr                    {result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN OR EQUAL')}
+        | expr LTOP expr                    {result = Comp_expr_node.new(val[0],val[2],'LESS THAN')}
+        | expr LEOP expr                    {result = Comp_expr_node.new(val[0],val[2],'LESS THAN OR EQUAL')}
+        | expr MULT expr                    {result = Arith_bin_expr_node.new(val[0],val[2],'MULTIPLICATION')}
+        | expr DIV expr                     {result = Arith_bin_expr_node.new(val[0],val[2],'EXACT DIVISION')}
+        | expr INTDIV expr                  {result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER DIVISION')}
+        | expr MOD expr                     {result = Arith_bin_expr_node.new(val[0],val[2],'EXACT MODULO')}
+        | expr INTMOD expr                  {result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER MODULO')}
+        | expr PLUS expr                    {result = Arith_bin_expr_node.new(val[0],val[2],'ADDITION')}
+        | expr MINUS expr                   {result = Arith_bin_expr_node.new(val[0],val[2],'SUBTRACTION')}
+        | MINUS expr =UMINUS                {result = Arith_un_expr_node.new(val[1],'ARITHMETIC NEGATION')}
+        | LPARENTH expr RPARENTH =PRNTS     {result = val[1]}
+        | b                                 
+        | n                                 
+        | ident                             
+        | callfunc                          
         ;
 
         param

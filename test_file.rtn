@@ -1,24 +1,9 @@
-func ola(number a, boolean b) -> boolean begin
-	true;
-	1.3;
-	return o(5,2.1,2);
-	return;
-	true;
-	1.3;
-	beginf;
-	wsx;
-end;
-
 program
-	(1-a+(1-2));
-	for i from 1 to toa+a  do
-	end;
-	repeat (a+a) times end;
-	read i;
-	write i,a,a,a;;;
 	with
-
-	do 
-	;
+	    number i;
+	do
+		write 1;
+	    i = 27;
+	    writeln i + 13;
 	end;
 end;
