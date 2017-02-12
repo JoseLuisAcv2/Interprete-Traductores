@@ -47,7 +47,7 @@ def main
 	begin
 		parser = Parser.new lexer
 		ast = parser.parse
-		#ast.print_ast
+		ast.print_ast
 	rescue SyntacticError => e
 		puts e
 		return

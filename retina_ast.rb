@@ -8,157 +8,189 @@
 # 				- Edwar Yepez		12-10855
 #
 
-class AST
-    def print_ast indent=""
-        puts "#{indent}#{self.class}:"
-
-        attrs.each do |a|
-            a.print_ast indent + "	" if a.respond_to? :print_ast
-        end
-    end
-
-    def attrs
-        instance_variables.map do |a|
-            instance_variable_get a
+class AST_node;
+    def indent(ind)
+        for i in 1..ind
+            print "\t"
         end
     end
 end
 
-class ReservedWord < AST
-    attr_accessor :word
+class Instruction_node < AST_node;end
+class Expression_node < AST_node;end
 
-    def initialize w 
-        @word = w
+class S_node < AST_node
+    def initialize(defblk = nil, programblk = nil)
+        @ind = 0
+        @defblk = defblk
+        @programblk = programblk
     end
 
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@word}"
-    end
-end
-
-class DataType < AST
-    attr_accessor :type
-
-    def initialize t
-        @type = t
-    end
-
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@type}"
+    def print_ast
+        if not @defblk.nil? then
+            puts "FUNCTION DEFINITION BLOCK:"
+            puts
+            @defblk.print_ast(@ind+1)
+        end
+        @programblk.print_ast(@ind) unless @programblk.nil?        
     end
 end
 
-class UnaryOperator < AST
-	attr_accessor :operand
-
-    def initialize op
-        @operand = op
+### FALTA
+class Programblk_node < AST_node
+    def initialize
     end
 
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@operand}"
+    def print_ast(ind)
     end
 end
 
-class BinaryOperator < AST
-    attr_accessor :left, :right
-
-    def initialize lh, rh
-        @left = lh
-        @right = rh
+class Defblk_node < AST_node
+    def initialize(funcdef, defblk)
+        @funcdef = funcdef
+        @defblk = defblk
     end
 
-	def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@left} #{@right}"
-    end
-end
-
-class Identifier < AST
-    attr_accessor :name
-
-    def initialize n
-        @name = n
-    end
-
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@name}"
+    def print_ast(ind)
+        @funcdef.print_ast(ind)
+        puts
+        @defblk.print_ast unless @defblk.nil?
     end
 end
 
-class Literal < AST
-    attr_accessor :value
-
-    def initialize v
-        @value = v
+class Funcdef_node < Instruction_node
+    def initialize(ident, paramlist, type, instrlist)
+        @ident = ident
+        @paramlist = paramlist
+        @type = type
+        @instrlist = instrlist
     end
 
-    def print_ast indent=""
-        puts "#{indent}#{self.class}: #{@value}"
+    def print_ast(ind)
+        indent(ind)
+        puts "FUNCTION DEFINITION:"
+        @ident.print_ast(ind+1)
+        @type.print_ast(ind+1)
+        indent(ind)
+        puts "\tPARAMETER LIST:"
+        @paramlist.print_ast(ind+2)
+        indent(ind)
+        puts "\tINSTRUCTION LIST:"
+        @instrlist.print_ast(ind+2)
     end
 end
 
-class OpenRoundBracket < AST;end
-class CloseRoundBracket < AST;end
-class AssignmentOperator < AST;end
-class Semicolon < AST;end
+class Identifier_node < Expression_node
+    def initialize(name)
+        @name = name
+    end
 
-class Program < ReservedWord;end
-class With < ReservedWord;end
-class Do < ReservedWord;end
-class Begin < ReservedWord;end
-class End < ReservedWord;end
-class Repeat < ReservedWord;end
-class Times < ReservedWord;end
-class Read < ReservedWord;end
-class Write < ReservedWord;end
-class Writeln < ReservedWord;end
-class If < ReservedWord;end
-class Then < ReservedWord;end
-class Else < ReservedWord;end
-class While < ReservedWord;end
-class For < ReservedWord;end
-class From < ReservedWord;end
-class To < ReservedWord;end
-class By < ReservedWord;end
-class Func < ReservedWord;end
-class Return < ReservedWord;end
-class ReturnType < ReservedWord;end
+    def print_ast(ind)
+        indent(ind)
+        puts "IDENTIFIER: #{@name.value}"
+    end
+end
 
-class NumberType < DataType;end
-class BooleanType < DataType;end
+class Boolean_node < Expression_node
+    def initialize(value)
+        @value = value
+    end
 
-class LogicalUnaryOperator < UnaryOperator;end
-class ArithmeticUnaryOperator < UnaryOperator;end
+    def print_ast(ind)
+        indent(ind)
+        puts "BOOLEAN LITERAL: #{@value.value}"
+    end
+end
 
-class LogicalBinaryOperator < BinaryOperator;end
-class ArithmeticBinaryOperator < BinaryOperator;end
-class ComparisonOperator < BinaryOperator;end
+class Number_node < Expression_node
+    def initialize(value)
+        @value = value
+    end
 
-class LogicalNot < LogicalUnaryOperator;end
+    def print_ast(ind)
+        indent(ind)
+        puts "NUMERICAL LITERAL: #{@value.value}"
+    end
+end
 
-class LogicalAnd < LogicalBinaryOperator;end
-class LogicalOr < LogicalBinaryOperator;end
+class String_node < Expression_node
+    def initialize(value)
+        @value = value
+    end
 
-class EqualOperator < ComparisonOperator;end
-class NotEqualOperator < ComparisonOperator;end
-class GreaterThanOperator < ComparisonOperator;end
-class GreaterThanOrEqualOperator < ComparisonOperator;end
-class LessThanOperator < ComparisonOperator;end
-class LessThanOrEqualOperator < ComparisonOperator;end
+    def print_ast(ind)
+        indent(ind)
+        puts "STRING: #{@value.value}"
+    end
+end
 
-class UnaryMinus < ArithmeticUnaryOperator;end
+class Paramlist_node < AST_node
+    def initialize(param, paramlist)
+        @param = param
+        @paramlist = paramlist
+    end
 
-class Addition < ArithmeticBinaryOperator;end
-class Subtraction < ArithmeticBinaryOperator;end
-class Multiplication < ArithmeticBinaryOperator;end
-class FloatDivison < ArithmeticBinaryOperator;end
-class ExactModulo < ArithmeticBinaryOperator;end
-class IntegerDivison < ArithmeticBinaryOperator;end
-class IntegerModulo < ArithmeticBinaryOperator;end
+    def print_ast(ind)
+        @param.print_ast(ind)
+        @paramlist.print_ast(ind) unless @paramlist.nil?
+    end
+end
 
-class BooleanLiteral < Literal;end
-class NumericalLiteral < Literal;end
-class StringLiteral < Literal;end
+class Param_node < AST_node
+    def initialize(type, ident)
+        @type = type
+        @ident = ident
+    end
 
-class BooleanTrue < BooleanLiteral;end
-class BooleanFalse < BooleanLiteral;end
+    def print_ast(ind)
+        indent(ind)
+        puts "PARAMETER:"
+        @type.print_ast(ind+1)
+        @ident.print_ast(ind+1)
+    end
+end
+
+class Type_node < AST_node
+    def initialize(type)
+        @type = type
+    end
+
+    def print_ast(ind)
+        indent(ind)
+        print "TYPE: "
+        if @type.nil? then
+            puts "Not specified"
+        else
+            puts "#{@type.value}"
+        end
+    end
+end
+
+class Instrlist_node < AST_node
+    def initialize(nxt_instr, instr)
+        @nxt_instr = nxt_instr
+        @instr = instr
+    end
+
+    def print_ast(ind)
+        @nxt_instr.print_ast(ind) unless @nxt_instr.nil?
+        @instr.print_ast(ind) unless @instr.nil?
+    end
+end
+
+class Return_node < Instruction_node
+    def initialize(expr)
+        @expr = expr
+    end
+
+    def print_ast(ind)
+        indent(ind)
+        puts "FUNCTION RETURN:"
+        if @expr.nil? then
+            indent(ind+1)
+            puts "Void"
+        else
+            @expr.print_ast(ind+1)
+        end
+    end
+end
