@@ -10,6 +10,7 @@ class Parser
         left AND
         left OR
         right ASSIGNOP
+        left COLON
         left SEMICOLON
 
     preclow
@@ -18,8 +19,11 @@ class Parser
             IF THEN ELSE WHILE FOR FROM TO BY FUNC RETURN RETURNTYPE TYPE 
             EQUALITYOP ORDEROP LPARENTH RPARENTH ASSIGNOP SEP COLON 
             MINUS PLUS MULT DIV MOD AND OR NOT BOOLEAN NUMBER STRING IDENTIFIER 
-
     rule
+
+        r
+        : retina
+        ;
         
         S
         : defblk programblk             {result = S_node.new(val[0],val[1])}

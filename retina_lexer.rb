@@ -200,11 +200,17 @@ class Lexer
 						line = line.partition(word).last
 						@tokens << Token.new(:AND, word, lineIndex, colIndex)
 						colIndex += word.size
-	
+						
 					when /^or[^a-zA-Z0-9_]/
-						word = line[/^(or)/]
+						word = line[/^or/]
 						line = line.partition(word).last
 						@tokens << Token.new(:OR, word, lineIndex, colIndex)
+						colIndex += word.size
+
+					when /^and[^a-zA-Z0-9_]/
+						word = line[/^and/]
+						line = line.partition(word).last
+						@tokens << Token.new(:AND, word, lineIndex, colIndex)
 						colIndex += word.size
 
 					when /^(==|\/=)/
@@ -267,13 +273,13 @@ class Lexer
 						@tokens << Token.new(:MULT, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(\/|div)/
+					when /^(\/|div[^a-zA-Z0-9_])/
 						word = line[/^(\/|div)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:DIV, word, lineIndex, colIndex)
 						colIndex += word.size
 
-					when /^(%|mod)/
+					when /^(%|mod[^a-zA-Z0-9_])/
 						word = line[/^(%|mod)/]
 						line = line.partition(word).last
 						@tokens << Token.new(:MOD, word, lineIndex, colIndex)
