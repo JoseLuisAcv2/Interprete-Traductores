@@ -5,6 +5,7 @@
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
+# 				- Edwar Yepez 		12-10855
 #
 
 class Token
