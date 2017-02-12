@@ -200,17 +200,11 @@ class Lexer
 						line = line.partition(word).last
 						@tokens << Token.new(:AND, word, lineIndex, colIndex)
 						colIndex += word.size
-						
+
 					when /^or[^a-zA-Z0-9_]/
 						word = line[/^or/]
 						line = line.partition(word).last
 						@tokens << Token.new(:OR, word, lineIndex, colIndex)
-						colIndex += word.size
-
-					when /^and[^a-zA-Z0-9_]/
-						word = line[/^and/]
-						line = line.partition(word).last
-						@tokens << Token.new(:AND, word, lineIndex, colIndex)
 						colIndex += word.size
 
 					when /^(==|\/=)/
