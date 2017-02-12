@@ -5,7 +5,6 @@
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
-# 				- Edwar Yepez		12-10855
 #
 
 class AST_node;
@@ -78,7 +77,7 @@ class Funcdef_node < Instruction_node
         @type.print_ast(ind+1)
         indent(ind)
         puts "\tPARAMETER LIST:"
-        @paramlist.print_ast(ind+2)
+        @paramlist.print_ast(ind+2) unless @paramlist.nil?
         indent(ind)
         puts "\tINSTRUCTION BLOCK:"
         @instrlist.print_ast(ind+2)

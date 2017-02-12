@@ -1,0 +1,14 @@
+func prueba() -> boolean begin
+	b = true;
+	return x;
+	end;
+
+program
+	with
+	    number i;
+	do
+		write 1;
+	    i = 27;
+	    writeln i + 13;
+	end;
+end;
