@@ -27,7 +27,7 @@ end
 
 class Parser < Racc::Parser
 
-module_eval(<<'...end retina_parser.y/module_eval...', 'retina_parser.y', 240)
+module_eval(<<'...end retina_parser.y/module_eval...', 'retina_parser.y', 276)
 
 def initialize(lexer)
     @lexer = lexer
@@ -741,581 +741,581 @@ Racc_debug_parser = false
 
 # reduce 0 omitted
 
-module_eval(<<'.,.,', 'retina_parser.y', 34)
+module_eval(<<'.,.,', 'retina_parser.y', 40)
   def _reduce_1(val, _values, result)
     result = S_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 35)
+module_eval(<<'.,.,', 'retina_parser.y', 41)
   def _reduce_2(val, _values, result)
     result = S_node.new(nil,val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 39)
+module_eval(<<'.,.,', 'retina_parser.y', 46)
   def _reduce_3(val, _values, result)
     result = Programblk_node.new(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 43)
+module_eval(<<'.,.,', 'retina_parser.y', 52)
   def _reduce_4(val, _values, result)
     result = Defblk_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 44)
+module_eval(<<'.,.,', 'retina_parser.y', 53)
   def _reduce_5(val, _values, result)
     result = Defblk_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 48)
+module_eval(<<'.,.,', 'retina_parser.y', 59)
   def _reduce_6(val, _values, result)
     result = Funcdef_node.new(val[1],val[3],Type_node.new(nil),val[6])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 49)
+module_eval(<<'.,.,', 'retina_parser.y', 60)
   def _reduce_7(val, _values, result)
     result = Funcdef_node.new(val[1],val[3],val[6],val[8])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 50)
+module_eval(<<'.,.,', 'retina_parser.y', 61)
   def _reduce_8(val, _values, result)
     result = Funcdef_node.new(val[1],nil,Type_node.new(nil),val[5])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 51)
+module_eval(<<'.,.,', 'retina_parser.y', 62)
   def _reduce_9(val, _values, result)
     result = Funcdef_node.new(val[1],nil,val[5],val[7])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 55)
+module_eval(<<'.,.,', 'retina_parser.y', 67)
   def _reduce_10(val, _values, result)
     result = Withblk_node.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 59)
+module_eval(<<'.,.,', 'retina_parser.y', 73)
   def _reduce_11(val, _values, result)
     result = Withblk_node.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 63)
+module_eval(<<'.,.,', 'retina_parser.y', 78)
   def _reduce_12(val, _values, result)
     result = Declist_node.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 64)
+module_eval(<<'.,.,', 'retina_parser.y', 79)
   def _reduce_13(val, _values, result)
     result = Declist_node.new(nil,nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 68)
+module_eval(<<'.,.,', 'retina_parser.y', 84)
   def _reduce_14(val, _values, result)
     result = While_loop_node.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 69)
+module_eval(<<'.,.,', 'retina_parser.y', 85)
   def _reduce_15(val, _values, result)
     result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 70)
+module_eval(<<'.,.,', 'retina_parser.y', 86)
   def _reduce_16(val, _values, result)
     result = For_loop_const_node.new(val[1],val[3],val[5],val[7])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 71)
+module_eval(<<'.,.,', 'retina_parser.y', 87)
   def _reduce_17(val, _values, result)
     result = Repeat_loop_node.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 75)
+module_eval(<<'.,.,', 'retina_parser.y', 92)
   def _reduce_18(val, _values, result)
     result = While_loop_node.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 76)
+module_eval(<<'.,.,', 'retina_parser.y', 93)
   def _reduce_19(val, _values, result)
     result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 77)
+module_eval(<<'.,.,', 'retina_parser.y', 94)
   def _reduce_20(val, _values, result)
     result = For_loop_const_node.new(val[1],val[3],val[5],val[7])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 78)
+module_eval(<<'.,.,', 'retina_parser.y', 95)
   def _reduce_21(val, _values, result)
     result = Repeat_loop_node.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 82)
+module_eval(<<'.,.,', 'retina_parser.y', 100)
   def _reduce_22(val, _values, result)
     result = If_node.new(val[1],val[3],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 83)
+module_eval(<<'.,.,', 'retina_parser.y', 101)
   def _reduce_23(val, _values, result)
     result = If_node.new(val[1],val[3],val[5])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 87)
+module_eval(<<'.,.,', 'retina_parser.y', 106)
   def _reduce_24(val, _values, result)
     result = If_node.new(val[1],val[3],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 88)
+module_eval(<<'.,.,', 'retina_parser.y', 107)
   def _reduce_25(val, _values, result)
     result = If_node.new(val[1],val[3],val[5])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 92)
+module_eval(<<'.,.,', 'retina_parser.y', 112)
   def _reduce_26(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 93)
+module_eval(<<'.,.,', 'retina_parser.y', 113)
   def _reduce_27(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 94)
+module_eval(<<'.,.,', 'retina_parser.y', 114)
   def _reduce_28(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 95)
+module_eval(<<'.,.,', 'retina_parser.y', 115)
   def _reduce_29(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 96)
+module_eval(<<'.,.,', 'retina_parser.y', 116)
   def _reduce_30(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 97)
+module_eval(<<'.,.,', 'retina_parser.y', 117)
   def _reduce_31(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 98)
+module_eval(<<'.,.,', 'retina_parser.y', 118)
   def _reduce_32(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 99)
+module_eval(<<'.,.,', 'retina_parser.y', 119)
   def _reduce_33(val, _values, result)
     result = Instrlist_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 100)
+module_eval(<<'.,.,', 'retina_parser.y', 120)
   def _reduce_34(val, _values, result)
     result = Instrlist_node.new(nil,nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 104)
+module_eval(<<'.,.,', 'retina_parser.y', 126)
   def _reduce_35(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 105)
+module_eval(<<'.,.,', 'retina_parser.y', 127)
   def _reduce_36(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 106)
+module_eval(<<'.,.,', 'retina_parser.y', 128)
   def _reduce_37(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 107)
+module_eval(<<'.,.,', 'retina_parser.y', 129)
   def _reduce_38(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 108)
+module_eval(<<'.,.,', 'retina_parser.y', 130)
   def _reduce_39(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 109)
+module_eval(<<'.,.,', 'retina_parser.y', 131)
   def _reduce_40(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 110)
+module_eval(<<'.,.,', 'retina_parser.y', 132)
   def _reduce_41(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 111)
+module_eval(<<'.,.,', 'retina_parser.y', 133)
   def _reduce_42(val, _values, result)
     result = Instrlist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 112)
+module_eval(<<'.,.,', 'retina_parser.y', 134)
   def _reduce_43(val, _values, result)
     result = Instrlist_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 113)
+module_eval(<<'.,.,', 'retina_parser.y', 135)
   def _reduce_44(val, _values, result)
     result = Instrlist_node.new(nil,nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 117)
+module_eval(<<'.,.,', 'retina_parser.y', 140)
   def _reduce_45(val, _values, result)
     result = Write_node.new(val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 118)
+module_eval(<<'.,.,', 'retina_parser.y', 141)
   def _reduce_46(val, _values, result)
     result = Write_node.new(val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 119)
+module_eval(<<'.,.,', 'retina_parser.y', 142)
   def _reduce_47(val, _values, result)
     result = Write_node.new(val[1],val[2],true)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 120)
+module_eval(<<'.,.,', 'retina_parser.y', 143)
   def _reduce_48(val, _values, result)
     result = Write_node.new(val[1],val[2],true)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 124)
+module_eval(<<'.,.,', 'retina_parser.y', 148)
   def _reduce_49(val, _values, result)
     result = Writelist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 125)
+module_eval(<<'.,.,', 'retina_parser.y', 149)
   def _reduce_50(val, _values, result)
     result = Writelist_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 126)
+module_eval(<<'.,.,', 'retina_parser.y', 150)
   def _reduce_51(val, _values, result)
     result = Writelist_node.new(nil,nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 130)
+module_eval(<<'.,.,', 'retina_parser.y', 155)
   def _reduce_52(val, _values, result)
     result = Read_node.new(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 134)
+module_eval(<<'.,.,', 'retina_parser.y', 160)
   def _reduce_53(val, _values, result)
     result = Callfunc_node.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 135)
+module_eval(<<'.,.,', 'retina_parser.y', 161)
   def _reduce_54(val, _values, result)
     result = Callfunc_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 139)
+module_eval(<<'.,.,', 'retina_parser.y', 166)
   def _reduce_55(val, _values, result)
     result = Decl_node.new(val[0],nil,val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 140)
+module_eval(<<'.,.,', 'retina_parser.y', 167)
   def _reduce_56(val, _values, result)
     result = Decl_node.new(val[0],val[1],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 144)
+module_eval(<<'.,.,', 'retina_parser.y', 173)
   def _reduce_57(val, _values, result)
     result = Paramlist_node.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 145)
+module_eval(<<'.,.,', 'retina_parser.y', 174)
   def _reduce_58(val, _values, result)
     result = Paramlist_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 149)
+module_eval(<<'.,.,', 'retina_parser.y', 179)
   def _reduce_59(val, _values, result)
     result = Arglist_node.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 150)
+module_eval(<<'.,.,', 'retina_parser.y', 180)
   def _reduce_60(val, _values, result)
     result = Arglist_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 154)
+module_eval(<<'.,.,', 'retina_parser.y', 186)
   def _reduce_61(val, _values, result)
     result = Identlist_node.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 155)
+module_eval(<<'.,.,', 'retina_parser.y', 187)
   def _reduce_62(val, _values, result)
     result = Identlist_node.new(val[0],nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 159)
+module_eval(<<'.,.,', 'retina_parser.y', 192)
   def _reduce_63(val, _values, result)
     result = Assignop_node.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 163)
+module_eval(<<'.,.,', 'retina_parser.y', 197)
   def _reduce_64(val, _values, result)
     result = Return_node.new(nil)
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 164)
+module_eval(<<'.,.,', 'retina_parser.y', 198)
   def _reduce_65(val, _values, result)
     result = Return_node.new(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 168)
+module_eval(<<'.,.,', 'retina_parser.y', 203)
   def _reduce_66(val, _values, result)
     result = Logical_bin_expr_node.new(val[0],val[2],'CONJUNCTION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 169)
+module_eval(<<'.,.,', 'retina_parser.y', 204)
   def _reduce_67(val, _values, result)
     result = Logical_bin_expr_node.new(val[0],val[2],'DISJUNCTION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 170)
+module_eval(<<'.,.,', 'retina_parser.y', 205)
   def _reduce_68(val, _values, result)
     result = Logical_un_expr_node.new(val[1],'LOGICAL NEGATION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 171)
+module_eval(<<'.,.,', 'retina_parser.y', 206)
   def _reduce_69(val, _values, result)
     result = Comp_expr_node.new(val[0],val[2],'EQUALITY')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 172)
+module_eval(<<'.,.,', 'retina_parser.y', 207)
   def _reduce_70(val, _values, result)
     result = Comp_expr_node.new(val[0],val[2],'INEQUALITY')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 173)
+module_eval(<<'.,.,', 'retina_parser.y', 208)
   def _reduce_71(val, _values, result)
     result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 174)
+module_eval(<<'.,.,', 'retina_parser.y', 209)
   def _reduce_72(val, _values, result)
     result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN OR EQUAL')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 175)
+module_eval(<<'.,.,', 'retina_parser.y', 210)
   def _reduce_73(val, _values, result)
     result = Comp_expr_node.new(val[0],val[2],'LESS THAN')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 176)
+module_eval(<<'.,.,', 'retina_parser.y', 211)
   def _reduce_74(val, _values, result)
     result = Comp_expr_node.new(val[0],val[2],'LESS THAN OR EQUAL')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 177)
+module_eval(<<'.,.,', 'retina_parser.y', 212)
   def _reduce_75(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'MULTIPLICATION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 178)
+module_eval(<<'.,.,', 'retina_parser.y', 213)
   def _reduce_76(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'EXACT DIVISION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 179)
+module_eval(<<'.,.,', 'retina_parser.y', 214)
   def _reduce_77(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER DIVISION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 180)
+module_eval(<<'.,.,', 'retina_parser.y', 215)
   def _reduce_78(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'EXACT MODULO')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 181)
+module_eval(<<'.,.,', 'retina_parser.y', 216)
   def _reduce_79(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER MODULO')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 182)
+module_eval(<<'.,.,', 'retina_parser.y', 217)
   def _reduce_80(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'ADDITION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 183)
+module_eval(<<'.,.,', 'retina_parser.y', 218)
   def _reduce_81(val, _values, result)
     result = Arith_bin_expr_node.new(val[0],val[2],'SUBTRACTION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 184)
+module_eval(<<'.,.,', 'retina_parser.y', 219)
   def _reduce_82(val, _values, result)
     result = Arith_un_expr_node.new(val[1],'ARITHMETIC NEGATION')
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 185)
+module_eval(<<'.,.,', 'retina_parser.y', 220)
   def _reduce_83(val, _values, result)
     result = val[1]
     result
@@ -1330,42 +1330,42 @@ module_eval(<<'.,.,', 'retina_parser.y', 185)
 
 # reduce 87 omitted
 
-module_eval(<<'.,.,', 'retina_parser.y', 193)
+module_eval(<<'.,.,', 'retina_parser.y', 229)
   def _reduce_88(val, _values, result)
     result = Param_node.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 197)
+module_eval(<<'.,.,', 'retina_parser.y', 233)
   def _reduce_89(val, _values, result)
     result = Type_node.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 201)
+module_eval(<<'.,.,', 'retina_parser.y', 237)
   def _reduce_90(val, _values, result)
     result = String_node.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 205)
+module_eval(<<'.,.,', 'retina_parser.y', 241)
   def _reduce_91(val, _values, result)
     result = Boolean_node.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 209)
+module_eval(<<'.,.,', 'retina_parser.y', 245)
   def _reduce_92(val, _values, result)
     result = Number_node.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'retina_parser.y', 213)
+module_eval(<<'.,.,', 'retina_parser.y', 249)
   def _reduce_93(val, _values, result)
     result = Identifier_node.new(val[0])
     result

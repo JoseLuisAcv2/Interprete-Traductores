@@ -11,7 +11,7 @@
 
 class Parser
 
-    # Precedence of tokens or expressions in Retina
+    # Precedence of tokens in Retina
     prechigh
     
         nonassoc PRNTS
@@ -63,18 +63,18 @@ class Parser
         | FUNC ident LPARENTH RPARENTH RETURNTYPE datatype BEGINBLK funcinstr ENDBLK SEP            {result = Funcdef_node.new(val[1],nil,val[5],val[7])}
         ;
         
-        # With-Do Block: Defines thes structure of a with-do block in retina
+        # With-Do Block: Defines the structure of a with-do block in retina
         withblk
         : WITH declblk DO instr ENDBLK      {result = Withblk_node.new(val[1],val[3])}
         ;
 
-        # Functions With-do block: Add previous with-do block the posibiity of have a 
+        # Functions With-do block: Add previous with-do block the possibility of having a 
         # return instruction inside of do lists of instructions
         funcwithblk
         : WITH declblk DO funcinstr ENDBLK  {result = Withblk_node.new(val[1],val[3])}
         ;
        
-        # Declarations Block; Defines the structure of a declarations block in retina
+        # Declarations Block: Defines the structure of a declarations block in retina
         declblk
         : decl SEP declblk                  {result = Declist_node.new(val[0],val[2])}
         |                                   {result = Declist_node.new(nil,nil)}
@@ -88,7 +88,7 @@ class Parser
         | REPEAT expr TIMES instr ENDBLK                            {result = Repeat_loop_node.new(val[1],val[3])}
         ;
 
-        # Function Iterators: Iterators that allows return instructions for functions in Retina
+        # Function Iterators: Iterators that allow return instructions for functions in Retina
         funciter
         : WHILE expr DO funcinstr ENDBLK                            {result = While_loop_node.new(val[1],val[3])}
         | FOR ident FROM expr TO expr BY expr DO funcinstr ENDBLK   {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])}
@@ -102,7 +102,7 @@ class Parser
         | IF expr THEN instr ELSE instr ENDBLK                      {result = If_node.new(val[1],val[3],val[5])}
         ;
 
-        # Function Conditionals: Conditionals that allows return instrucntions for functions in Retina
+        # Function Conditionals: Conditionals that allow return instructions for functions in Retina
         funccond
         : IF expr THEN funcinstr ENDBLK                             {result = If_node.new(val[1],val[3],nil)}
         | IF expr THEN funcinstr ELSE funcinstr ENDBLK              {result = If_node.new(val[1],val[3],val[5])}
@@ -136,7 +136,7 @@ class Parser
         |                                   {result = Instrlist_node.new(nil,nil)}
         ;
 
-        # Write block: Defines the structure of the outputs blocks in Retina
+        # Write block: Defines the structure of the output blocks in Retina
         writeblk
         : WRITE writelist str               {result = Write_node.new(val[1],val[2])}
         | WRITE writelist expr              {result = Write_node.new(val[1],val[2])}
@@ -168,14 +168,14 @@ class Parser
         | datatype assign                   {result = Decl_node.new(val[0],val[1],nil)}
         ;
 
-        #Parameters list: Defines valid structure of list of parameters in a function
+        # Parameters list: Defines valid structure of list of parameters in a function
         # definition.
         paramlist
         : param COLON paramlist             {result = Paramlist_node.new(val[0],val[2])}
         | param                             {result = Paramlist_node.new(val[0],nil)}
         ;
 
-        # Argumnent list: Defines valid structure of a list of arguments in a function call
+        # Argument list: Defines valid structure of a list of arguments in a function call
         arglist
         : expr COLON arglist                {result = Arglist_node.new(val[0],val[2])}
         | expr                              {result = Arglist_node.new(val[0],nil)}
@@ -193,7 +193,8 @@ class Parser
         : ident ASSIGNOP expr               {result = Assignop_node.new(val[0],val[2])}
         ;
 
-        # Return Instruction: Defines a valid return instructions in retina_lexer
+        # Return Instruction: Defines valid return instructions in Retina
+        returnblk
         : RETURN                            {result = Return_node.new(nil)}
         | RETURN expr                       {result = Return_node.new(val[1])}
         ;
