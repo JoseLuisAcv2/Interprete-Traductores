@@ -21,10 +21,7 @@ class Parser
         nonassoc EQOP INEQOP GTOP GEOP LTOP LEOP
         left AND
         left OR
-        nonassoc ASSIGNOP
-        nonassoc COLON
-        nonassoc SEMICOLON
-
+        
     preclow
 
     # Valid Tokens list for Retina
