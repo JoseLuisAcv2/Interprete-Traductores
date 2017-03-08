@@ -342,8 +342,8 @@ class Lexer
 						@tokens << Token.new(:NUMBER, word, lineIndex, colIndex)
 						colIndex += word.size
 	
-					when /^"([^\\n\"\\]|\\\\|\\\\n|\\\")*"/
-						word = line[/^"([^\\n\"\\]|\\\\|\\\\n|\\\")*"/]
+					when /^"([^\n\"\\]|\\\\|\\\\n|\\")*"/
+						word = line[/^"([^\n\"\\]|\\\\|\\\\n|\\\")*"/]
 						line = line.partition(word).last
 						@tokens << Token.new(:STRING, word, lineIndex, colIndex)
 						colIndex += word.size

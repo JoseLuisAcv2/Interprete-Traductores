@@ -5,6 +5,7 @@
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
+#               - Edwar Yepez       12-10855
 #
 
 # Superclass of any element that belong to the AST
@@ -24,6 +25,9 @@ class Un_expr_node < AST_node;end
 
 # Definition of root node an print_ast method
 class S_node < AST_node
+
+    attr_accessor :defblk, :programblk
+
     def initialize(defblk = nil, programblk = nil)
         @ind = 0
         @defblk = defblk
@@ -55,6 +59,9 @@ end
 
 # Definition of a definitions block node
 class Defblk_node < AST_node
+    
+    attr_accessor :defblk, :funcdef
+
     def initialize(funcdef, defblk)
         @funcdef = funcdef
         @defblk = defblk
@@ -69,6 +76,9 @@ end
 
 # Definition of a function declaration node
 class Funcdef_node < Instruction_node
+
+    attr_accessor :ident, :paramlist, :type, :instrlist
+
     def initialize(ident, paramlist, type, instrlist)
         @ident = ident
         @paramlist = paramlist
@@ -92,6 +102,9 @@ end
 
 # Definition of identifier node
 class Identifier_node < Expression_node
+
+    attr_accessor :name
+
     def initialize(name)
         @name = name
     end
@@ -168,6 +181,9 @@ end
 
 # Definition of a type node
 class Type_node < AST_node
+
+    attr_accessor :type
+
     def initialize(type)
         @type = type
     end
