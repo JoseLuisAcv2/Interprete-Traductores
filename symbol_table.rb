@@ -47,9 +47,27 @@ class SymbolTable
 		@children << child_table
 	end
 
-	def print_table()
-		puts "Imprimir tabla simbolos"
+	def print_tables()
+		@children.each do |child|
+			child.print_table()
+		end	
 	end
+
+	def print_table(depth = 0)
+		indent(depth)
+		puts @name
+		# Print child tables
+		@children.each do |child|
+			child.print_table(depth+1)
+		end	
+	end
+
+	# Indent output
+	def indent(ind)
+        for i in 1..ind
+            print "\t"
+        end
+    end
 
 end
 

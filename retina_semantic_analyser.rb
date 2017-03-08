@@ -10,7 +10,7 @@
 
 require_relative 'symbol_table'
 
-$rootTable = SymbolTable.new
+$rootTable = SymbolTable.new "Root Table"
 $funcTable = FuncSymbolTable.new
 
 # Semantic analyser for abstract syntax tree
@@ -28,6 +28,7 @@ class SemanticAnalyser
 
 	# Handle entry point to AST
 	def scope_handler(scope)
+
 		# Fuction definition block
 		if not scope.defblk.nil? then
 			defblk_handler(scope.defblk, $rootTable)
@@ -63,9 +64,7 @@ class SemanticAnalyser
 		end
 
 		# Crear nueva tabla de simbolos para alcance de funcion
-		newSymbolTable = SymbolTable.new "Table " + ident
-		newSymbolTable.set_predecessor(symbolTable)
-		symbolTable.add_child(newSymbolTable)
+		newSymbolTable = createSymbolTable(ident,symbolTable)
 		### FALTA RELLENAR TABLA rellenar()
 
 
@@ -78,7 +77,7 @@ class SemanticAnalyser
 
 		# Identificador para funcion ya utilizado
 		else
-			puts "repetido"    # ALMACENAR ERROR
+			raise SemanticError.new funcdef, "function id not unique"
 		end
 
 	end
@@ -110,13 +109,12 @@ class SemanticAnalyser
 		puts "program blk coming soon..."
 	end
 
-
-
-
-
-
-
-
+	# Create new symbol table
+	def createSymbolTable(name,predecessor)
+		newSymbolTable = SymbolTable.new "Table " + name
+		newSymbolTable.set_predecessor(predecessor)
+		predecessor.add_child(newSymbolTable)
+	end
 
 	# Raise semantic error if found
 	def on_error(id, token, stack)
@@ -127,15 +125,16 @@ end
 
 class SemanticError < RuntimeError
 
-    def initialize(tok)
+    def initialize(tok, errorType)
         @token = tok
+        @errorType = errorType
     end
 
     def to_s
-        if @token.eql? "$" then
-            "Unexpected EOF"
-        else
-            "Line #{@token.line}, column #{@token.column}: unexpected token #{@token.symbol}: #{@token.value}"   
-        end
+    	# Print message according to error type
+    	case @errorType
+    	when "function id not unique"
+    		"epa funcion ya definida"
+    	end
     end
 end
