@@ -12,6 +12,7 @@
 # Import dependencies
 require_relative 'retina_lexer'
 require_relative 'retina_parser'
+require_relative 'retina_semantic_analyser'
 
 def main
 
@@ -44,16 +45,36 @@ def main
 		return
 	end
 
-	# Creates parser for the given file and print the abstract sintact tree in case
-	# parse has parsed successfully or prints unexpected token otherwise
+	# Creates parser for the given file in case parse has parsed
+	# successfully or prints unexpected token otherwise
 	begin
 		parser = Parser.new lexer
 		ast = parser.parse
-		ast.print_ast
 	rescue SyntacticError => e
 		puts e
 		return
 	end
+
+	############################################
+	############## codeando aqui ###############
+	############################################
+	begin
+		
+		#ast.print_ast
+
+		semanticAnalyser = SemanticAnalyser.new ast
+		symbolTable = semanticAnalyser.analyze
+
+		#symbolTable.print_table()
+
+	rescue SyntacticError => e
+		puts e
+		return
+	end
+	############################################
+	############################################
+	############################################
+
 end
 
 main
