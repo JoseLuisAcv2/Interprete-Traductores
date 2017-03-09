@@ -342,7 +342,6 @@ class SemanticAnalyser
 		# Get function identifier
 		ident = instr.ident.name.value
 
-
 		# Function is declared
 		if (not $funcTable.lookup(ident).nil?) then
 
@@ -365,6 +364,7 @@ class SemanticAnalyser
 	end
 
 	def arglist_handler(args, params, symbolTable)
+		
 		if(args.nil?) then
 			
 			# Empty argument list and not empty parameter list
