@@ -8,6 +8,7 @@ begin
         for i from min(1,2,true) to 2+1 by 3 do
             repeat i times
                 min(1,2,true);
+                a;
             end;
             return 2;
         end;
@@ -36,7 +37,7 @@ program
             number angle = n;
         do
             while angle <= 360 do
-                rotater(n);
+                #rotater(n);
                 circle(100);
                 angle = angle + n;
             end;

@@ -133,36 +133,52 @@ class SemanticAnalyser
 		case instr
 		when Identifier_node
 			identifier_handler(instr, symbolTable)
+		
 		when Return_node
 			return_handler(instr, symbolTable)
+		
 		when Logical_bin_expr_node
 			logical_bin_expr_handler(instr, symbolTable)
+		
 		when Logical_un_expr_node
 			logical_un_expr_handler(instr, symbolTable)
+		
 		when Arith_bin_expr_node
 			arith_bin_expr_handler(instr, symbolTable)
+		
 		when Arith_un_expr_node
 			arith_un_expr_handler(instr, symbolTable)
+		
 		when Comp_expr_node
 			comp_expr_handler(instr, symbolTable)
+		
 		when Callfunc_node
 			callfunc_handler(instr, symbolTable)
+		
 		when Assignop_node
 			assignop_handler(instr, symbolTable)
+		
 		when Withblk_node
 			withblk_handler(instr, symbolTable)
+		
 		when While_loop_node
 			while_loop_handler(instr, symbolTable)
+		
 		when For_loop_node
 			for_loop_handler(instr, symbolTable)
+		
 		when For_loop_const_node
 			for_loop_const_handler(instr, symbolTable)
+		
 		when Repeat_loop_node
 			repeat_loop_handler(instr, symbolTable)
+		
 		when If_node
 			if_handler(instr, symbolTable)
+		
 		when Read_node
 			read_handler(instr, symbolTable)
+		
 		when Write_node
 			write_handler(instr, symbolTable)
 		end
@@ -203,20 +219,28 @@ class SemanticAnalyser
 		case expr
 		when Number_node
 			return "number"
+		
 		when Boolean_node
 			return "boolean"
+		
 		when Identifier_node
 			return identifier_handler(expr, symbolTable)
+		
 		when Logical_bin_expr_node
 			return logical_bin_expr_handler(expr, symbolTable)
+		
 		when Logical_un_expr_node
 			return logical_un_expr_handler(expr, symbolTable)
+		
 		when Arith_bin_expr_node
 			return arith_bin_expr_handler(expr, symbolTable)
+		
 		when Arith_un_expr_node
 			return arith_un_expr_handler(expr, symbolTable)
+		
 		when Comp_expr_node
 			return comp_expr_handler(expr, symbolTable)
+		
 		when Callfunc_node
 			return callfunc_handler(expr, symbolTable)
 		end
@@ -586,35 +610,14 @@ class SemanticAnalyser
 		instrlist_handler(repeat.instrlist, symbolTable)
 	end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	# Handle main program block
 	def programblk_handler(programblk, symbolTable)
-		#puts "program blk coming soon..."
+		
+		# Create new symbol table for program scope
+		newSymbolTable = createSymbolTable("program",symbolTable)
+
+		# Handle instructions of program block
+		instrlist_handler(programblk.instrlist, newSymbolTable)
 	end
 
 	# Create new symbol table

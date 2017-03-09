@@ -67,13 +67,10 @@ class SymbolTable
 	end
 
 	def print_tables()
+		puts "SYMBOL TABLES"
 		@children.each do |child|
+			puts "\n"
 			child.print_table()
-			
-			# Print newline to separate function tables
-			if(not child.name.eql? "Scope main") then
-				puts "\n"
-			end
 		end	
 	end
 
