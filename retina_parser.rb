@@ -17,6 +17,7 @@ class SyntacticError < RuntimeError
     end
 
     def to_s
+        puts "SYNTACTIC ERROR FOUND:"
         if @token.eql? "$" then
             "Unexpected EOF"
         else
@@ -27,7 +28,7 @@ end
 
 class Parser < Racc::Parser
 
-module_eval(<<'...end retina_parser.y/module_eval...', 'retina_parser.y', 273)
+module_eval(<<'...end retina_parser.y/module_eval...', 'retina_parser.y', 274)
 
 def initialize(lexer)
     @lexer = lexer

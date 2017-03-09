@@ -78,14 +78,14 @@ class SymbolTable
 		
 		# Table name
 		indent(depth)
-		puts @name
+		puts "SCOPE: " + @name.to_s
 		
 		# "Variables" title
 		indent(depth+1)
 		if(@table.empty?)
-			puts "Variables: None"
+			puts "VARIABLES: None"
 		else
-			puts "Variables:"
+			puts "VARIABLES:"
 		end
 
 		# Print table variables
@@ -97,9 +97,9 @@ class SymbolTable
 		# "Sub-scopes" title
 		indent(depth+1)
 		if(@children.empty?)
-			puts "Sub-scopes: None"
+			puts "SUB-SCOPES: None"
 		else
-			puts "Sub-scopes:"
+			puts "SUB-SCOPES:"
 		end
 		
 		# Print child tables

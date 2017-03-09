@@ -261,6 +261,7 @@ class SyntacticError < RuntimeError
     end
 
     def to_s
+        puts "SYNTACTIC ERROR FOUND:"
         if @token.eql? "$" then
             "Unexpected EOF"
         else

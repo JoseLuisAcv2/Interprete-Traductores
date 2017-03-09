@@ -389,6 +389,7 @@ class Lexer
 
 	# Prints all lexicographic erros found in the input file
 	def print_lexicographic_errors
+		puts "LEXICOGRAPHIC ERRORS FOUND:"
 		@lexicographic_errors.each do |token|
 			puts "Line #{token.line}, column #{token.column}: unexpected character '#{token.value}'";
 		end;
