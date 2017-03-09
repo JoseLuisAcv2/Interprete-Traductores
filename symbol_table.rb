@@ -10,8 +10,11 @@
 
 class SymbolTable
 
+	attr_accessor :name, :children, :enum
+
 	def initialize(name = nil, predecessor = nil)
 		@name = name
+		@enum = nil
 		@table = Hash.new
 		@predecessor = predecessor
 		@children = Array.new
@@ -21,6 +24,10 @@ class SymbolTable
 		@table.store(key, value)
 	end
 
+	def delete(key)
+		@table.delete(key)
+	end
+
 	def lookup(key)
 		if(has_key(key))
 			return @table[key]
@@ -28,6 +35,18 @@ class SymbolTable
 			return @predecessor.lookup(key)
 		else
 			return nil
+		end
+	end
+
+	def update(key, value)
+		if !(has_key(key))
+			if (@predecessor != nil)
+				return father.lookup(key)
+			else
+				return nil
+			end
+		else
+			return @table[key]
 		end
 	end
 
@@ -50,15 +69,45 @@ class SymbolTable
 	def print_tables()
 		@children.each do |child|
 			child.print_table()
+			
+			# Print newline to separate function tables
+			if(not child.name.eql? "Scope main") then
+				puts "\n"
+			end
 		end	
 	end
 
 	def print_table(depth = 0)
+		
+		# Table name
 		indent(depth)
 		puts @name
+		
+		# "Variables" title
+		indent(depth+1)
+		if(@table.empty?)
+			puts "Variables: None"
+		else
+			puts "Variables:"
+		end
+
+		# Print table variables
+		@table.each do |ident, type|
+			indent(depth+2)
+			puts ident.to_s + " : " + type.to_s
+		end
+		
+		# "Sub-scopes" title
+		indent(depth+1)
+		if(@children.empty?)
+			puts "Sub-scopes: None"
+		else
+			puts "Sub-scopes:"
+		end
+		
 		# Print child tables
 		@children.each do |child|
-			child.print_table(depth+1)
+			child.print_table(depth+2)
 		end	
 	end
 
@@ -75,15 +124,16 @@ class FuncSymbolTable < SymbolTable
 
 	def initialize(name = nil)
 		super(name)
-		@funcTable = Hash.new
+		@funcParam = Hash.new
 	end
 
-	def get_funcTable(func)
-		return @funcTable[func]
+	def get_funcParams(func)
+		return @funcParam[func]
 	end
 
-	def attach(func,func_table)
-		@funcTable.store(func,func_table)
+	def insert(func,type,params)
+		super(func,type)
+		@funcParam[func] = params		
 	end
 
 end

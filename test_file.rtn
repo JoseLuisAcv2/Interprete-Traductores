@@ -1,17 +1,61 @@
-func min(number x, number y) -> number
+func min(number x, number y, boolean z) -> number
 begin
+    with
+        boolean b = true;
+        number a;
+        number c = 1;
+    do
+        z = x < y;
+        if z then
+            return x;
+        end;
+        return y;
+    end;
+    with
+    do
+        with
+            boolean b;
+        do
+        end;
+        with
+        do
+            with
+            do
+            end;
+        end;
+        with
+        do
+        end;
+        z = x < y;
+        if z then
+            return x;
+        end;
+        return y;
+    end;
     with
         boolean b;
     do
-        b = x < y;
-        if b then
+        with
+        do
+        end;    
+        z = x < y;
+        if z then
+            return x;
+        end;
+        return y;
+    end;
+    with
+        boolean b;
+    do
+        z = x < y;
+        if z then
             return x;
         end;
         return y;
     end;
 end;
 
-func incremental_forward(number steps)
+func inc(number steps)
 begin
     for i from 1 to steps do
         forward(i);

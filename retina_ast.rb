@@ -46,6 +46,9 @@ end
 
 # Definition of a program block node
 class Programblk_node < AST_node
+
+    attr_accessor :instrlist
+
     def initialize(instrlist)
         @instrlist = instrlist
     end
@@ -117,6 +120,9 @@ end
 
 # Definition of a boolean node
 class Boolean_node < Expression_node
+
+    attr_accessor :value
+
     def initialize(value)
         @value = value
     end
@@ -129,6 +135,9 @@ end
 
 # Definition of a number node
 class Number_node < Expression_node
+
+    attr_accessor :value
+
     def initialize(value)
         @value = value
     end
@@ -141,6 +150,9 @@ end
 
 # Definition of a string node
 class String_node < Expression_node
+
+    attr_accessor :value
+
     def initialize(value)
         @value = value
     end
@@ -153,6 +165,9 @@ end
 
 # Definition of a parameters list node
 class Paramlist_node < AST_node
+
+    attr_accessor :param, :paramlist
+
     def initialize(param, paramlist)
         @param = param
         @paramlist = paramlist
@@ -166,6 +181,9 @@ end
 
 # Definition of a parameter node
 class Param_node < AST_node
+
+    attr_accessor :type, :ident
+
     def initialize(type, ident)
         @type = type
         @ident = ident
@@ -201,6 +219,9 @@ end
 
 # Definition of a instruction list node
 class Instrlist_node < AST_node
+
+    attr_accessor :nxt_instr, :instr
+
     def initialize(nxt_instr, instr)
         @nxt_instr = nxt_instr
         @instr = instr
@@ -214,7 +235,10 @@ end
 
 # Definition of a return node
 class Return_node < Instruction_node
-    def initialize(expr)
+
+    attr_accessor :expr
+
+    def initialize(expr = nil)
         @expr = expr
     end
 
@@ -232,6 +256,9 @@ end
 
 # Definition of a logical binary expression node
 class Logical_bin_expr_node < Bin_expr_node;
+
+    attr_accessor :left, :right, :op
+
     def initialize(left, right, op)
         @left = left
         @right = right
@@ -252,6 +279,9 @@ end
 
 # Definition of a unary logical expression node
 class Logical_un_expr_node < Un_expr_node;
+
+    attr_accessor :operand, :operator
+
     def initialize(operand, operator)
         @operand = operand
         @operator = operator
@@ -268,6 +298,9 @@ end
 
 # Definition of a arithmethic binary expression node
 class Arith_bin_expr_node < Bin_expr_node;
+
+    attr_accessor :left, :right, :op
+
     def initialize(left, right, op)
         @left = left
         @right = right
@@ -288,6 +321,9 @@ end
 
 # Definition of a arithmethic unary expression node
 class Arith_un_expr_node < Un_expr_node;
+
+    attr_accessor :operand, :operator
+
     def initialize(operand, operator)
         @operand = operand
         @operator = operator
@@ -304,6 +340,9 @@ end
 
 # Definition of a comparator expression node
 class Comp_expr_node < Bin_expr_node;
+
+    attr_accessor :left, :right, :op 
+
     def initialize(left, right, op)
         @left = left
         @right = right
@@ -324,6 +363,9 @@ end
 
 # Definition of a function call node
 class Callfunc_node < Expression_node
+
+    attr_accessor :ident, :arglist
+
     def initialize(ident, arglist)
         @ident = ident
         @arglist = arglist
@@ -346,6 +388,9 @@ end
 
 # Definition of a argument list node
 class Arglist_node < AST_node
+
+    attr_accessor :arg, :arglist
+
     def initialize(arg, arglist)
         @arg = arg
         @arglist = arglist
@@ -359,6 +404,9 @@ end
 
 # Definition of a assign instruction node
 class Assignop_node < Instruction_node
+    
+    attr_accessor :ident, :expr
+
     def initialize(ident, expr)
         @ident = ident
         @expr = expr
@@ -378,6 +426,9 @@ end
 
 # Definition of a with-do block node
 class Withblk_node < Instruction_node
+
+    attr_accessor :declist, :instrlist
+
     def initialize(declist, instrlist)
         @declist = declist
         @instrlist = instrlist
@@ -398,6 +449,9 @@ end
 
 # Definition of a declarations list node
 class Declist_node < AST_node
+
+    attr_accessor :decl, :nxt_decl
+
     def initialize(nxt_decl, decl)
         @nxt_decl = nxt_decl
         @decl = decl
@@ -409,8 +463,11 @@ class Declist_node < AST_node
     end
 end
 
-# Definition of a identifier list node
+# Definition of an identifier list node
 class Identlist_node < AST_node
+
+    attr_accessor :ident, :nxt_ident
+
     def initialize(nxt_ident, ident)
         @nxt_ident = nxt_ident
         @ident = ident
@@ -424,6 +481,9 @@ end
 
 # Definition of a declaration node
 class Decl_node < Instruction_node
+
+    attr_accessor :type, :assign, :identlist
+
     def initialize(type, assign, identlist)
         @type = type
         @assign = assign

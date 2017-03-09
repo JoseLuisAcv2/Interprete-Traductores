@@ -61,6 +61,9 @@ def main
 	# Create symbol table for the AST returned by the parser and
 	# make semantic verifications
 	begin
+
+		#ast.print_ast()
+
 		semanticAnalyser = SemanticAnalyser.new ast
 		symbolTable = semanticAnalyser.analyze
 		symbolTable.print_tables()
