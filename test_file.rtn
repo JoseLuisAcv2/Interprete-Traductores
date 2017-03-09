@@ -5,66 +5,25 @@ begin
         number a;
         number c = 1;
     do
-        z = x < y;
-        if z then
-            return x;
-        end;
-        return y;
-    end;
-    with
-    do
-        with
-            boolean b;
-        do
-        end;
-        with
-        do
-            with
-            do
+        for i from min(1,2,true) to 2+1 by 3 do
+            repeat i times
+                min(1,2,true);
             end;
+            return 2;
         end;
-        with
-        do
-        end;
-        z = x < y;
-        if z then
-            return x;
-        end;
-        return y;
-    end;
-    with
-        boolean b;
-    do
-        with
-        do
-        end;    
-        z = x < y;
-        if z then
-            return x;
-        end;
-        return y;
-    end;
-    with
-        boolean b;
-    do
-        z = x < y;
-        if z then
-            return x;
-        end;
-        return y;
     end;
 end;
 
 func inc(number steps)
 begin
-    for i from 1 to steps do
-        forward(i);
-    end;
+    steps;
 end;
 
 func circle(number radio)
 begin
-    arc(360, radio);
+    while 1>2 do
+        return;
+    end;
 end;
 
 program

@@ -151,13 +151,20 @@ class SemanticAnalyser
 			assignop_handler(instr, symbolTable)
 		when Withblk_node
 			withblk_handler(instr, symbolTable)
-		#when While_loop_node
-		#when For_loop_node
-		#when For_loop_const_node
-		#when Repeat_loop_node
-		#when If_node
-		#when Read_node
-		#when Write_node
+		when While_loop_node
+			while_loop_handler(instr, symbolTable)
+		when For_loop_node
+			for_loop_handler(instr, symbolTable)
+		when For_loop_const_node
+			for_loop_const_handler(instr, symbolTable)
+		when Repeat_loop_node
+			repeat_loop_handler(instr, symbolTable)
+		when If_node
+			if_handler(instr, symbolTable)
+		when Read_node
+			read_handler(instr, symbolTable)
+		when Write_node
+			write_handler(instr, symbolTable)
 		end
 	end
 
@@ -182,8 +189,8 @@ class SemanticAnalyser
 				raise SemanticError.new funcType, "return instruction in void function"
 			end
 	
+			# Get return expression type
 			exprType = expr_handler(instr.expr, symbolTable)
-			exprType = "number" # POR AHORAAAAAAAAAAAAAAAAAAA
 	
 			# Return type doesnt match function type
 			if(not funcType.eql? exprType) then
@@ -218,7 +225,7 @@ class SemanticAnalyser
 	def identifier_handler(identifier, symbolTable)
 		name = identifier.name.value
 		# Variable not declared
-		if(not symbolTable.lookup(name)) then
+		if(symbolTable.lookup(name).nil?) then
 			raise SemanticError.new name, "variable not declared"
 		# Return variable type
 		else
@@ -310,19 +317,25 @@ class SemanticAnalyser
 		# Get function identifier
 		ident = instr.ident.name.value
 
+
 		# Function is declared
-		if ($funcTable.has_key(ident)) then
+		if (not $funcTable.lookup(ident).nil?) then
 
 			# Parameters/arguments verification
-			params = $funcTable.get_funcParams(ident)
+			funcParams = $funcTable.get_funcParams(ident)
+			params = Array.new
+			# Copy function parameters for argument verifications
+			funcParams.each do |param|
+				params << param
+			end
 			arglist_handler(instr.arglist, params, symbolTable)
 		
 			# Return function return type
-			return $funcTable.has_key(ident)
+			return $funcTable.lookup(ident)
 
 		# Function not declared
 		else
-			SemanticError.new instr, "function not declared"
+			raise SemanticError.new instr, "function not declared"
 		end
 	end
 
@@ -409,7 +422,7 @@ class SemanticAnalyser
 			ident = decl.assign.ident.name.value
 
 			# Variable not declared (good)
-			if(symbolTable.lookup(ident).nil?)
+			if(not symbolTable.has_key(ident))
 				# Insert variable in symbol table
 				symbolTable.insert(ident, type)
 				# handle assignment to variable
@@ -428,7 +441,7 @@ class SemanticAnalyser
 		ident = identlist.nxt_ident.name.value
 		
 		# Variable not declared (good)
-		if(symbolTable.lookup(ident).nil?)
+		if(not symbolTable.has_key(ident))
 			# Insert variable in symbol table
 			symbolTable.insert(ident, type)
 		# Variable already declared in scope
@@ -440,6 +453,153 @@ class SemanticAnalyser
 		identlist_handler(identlist.ident, type, symbolTable) unless identlist.ident.nil?
 
 	end
+
+	def read_handler(read, symbolTable)
+
+		# Variable identifier
+		ident = read.ident.name.value
+
+		# Variable not declared (bad)
+		if(symbolTable.lookup(ident).nil?) then
+			raise SemanticError.new read, "variable not declared"
+		end
+
+	end
+
+	def write_handler(write, symbolTable)
+
+		# Handle writelist of expressions
+		writeList_handler(write.writelist, symbolTable) unless write.writelist.nil?
+
+		# If last item is not a string, then handle the expression
+		if !(write.lastitem.instance_of? String_node) then
+			expr_handler(write.lastitem, symbolTable)
+		end
+	end
+
+	def writeList_handler(writelist, symbolTable)
+
+		# Handle writelist of expressions
+		writeList_handler(writelist.nxt_write, symbolTable) unless writelist.nxt_write.nil?
+
+		# If last item is not a string, then handle the expression
+		if (not writelist.cur_write.nil? and not writelist.cur_write.instance_of? String_node) then
+			expr_handler(writelist.cur_write, symbolTable)
+		end
+	end
+
+	def if_handler(ifblk, symbolTable)
+
+		# Get type of 'if' condition
+		condType = expr_handler(ifblk.cond, symbolTable)
+
+		# Condition type must be boolean
+		if(not condType.eql? "boolean") then
+			raise SemanticError.new ifblk, "if condition type not boolean"
+		end
+
+		# Handle instruction block of 'if'
+		instrlist_handler(ifblk.instrlist1, symbolTable)
+		# Handle instruction block of 'else'
+		instrlist_handler(ifblk.instrlist2, symbolTable) unless ifblk.instrlist2.nil?
+	end
+
+	def while_loop_handler(whileblk, symbolTable)
+		
+		# Get type of 'while' condition
+		condType = expr_handler(whileblk.expr, symbolTable)
+
+		# Condition type must be boolean
+		if(not condType.eql? "boolean") then
+			raise SemanticError.new whileblk, "while condition type not boolean"
+		end		
+
+		# Handle 'while' instruction block
+		instrlist_handler(whileblk.instrlist, symbolTable)
+	end
+
+	def for_loop_handler(forblk, predSymbolTable)
+
+		# Create new symbol table for for-block scope
+		newSymbolTable = createSymbolTable("forblk",predSymbolTable)
+
+		# Store for variable in new symbol table
+		newSymbolTable.insert(forblk.counter.name.value, "number")	
+
+		# Check lower bound expression type is number
+		lowerBoundType = expr_handler(forblk.lower_bound, newSymbolTable)
+		if(not lowerBoundType.eql? "number") then
+			raise SemanticError.new forblk, "for lower bound type not number"
+		end
+
+		# Check upper bound expression type is number
+		upperBoundType = expr_handler(forblk.upper_bound, newSymbolTable)
+		if(not upperBoundType.eql? "number") then
+			raise SemanticError.new forblk, "for upper bound type not number"
+		end
+
+		# Check increment expression type is number
+		incrementType = expr_handler(forblk.increment, newSymbolTable)
+		if(not incrementType.eql? "number") then
+			raise SemanticError.new forblk, "for increment type not number"
+		end
+
+		# Handle 'for' instruction block
+		instrlist_handler(forblk.instrlist, newSymbolTable)
+	end
+
+	def for_loop_const_handler(constforblk, predSymbolTable)
+
+		# Create new symbol table for const-for-block scope
+		newSymbolTable = createSymbolTable("constforblk",predSymbolTable)
+
+		# Store const-for variable in new symbol table
+		newSymbolTable.insert(constforblk.counter.name.value, "number")	
+
+		puts constforblk.counter
+
+		# Check lower bound expression type is number
+		lowerBoundType = expr_handler(constforblk.lower_bound, newSymbolTable)
+		if(not lowerBoundType.eql? "number") then
+			raise SemanticError.new constforblk, "const for lower bound type not number"
+		end
+
+		# Check upper bound expression type is number
+		upperBoundType = expr_handler(constforblk.upper_bound, newSymbolTable)
+		if(not upperBoundType.eql? "number") then
+			raise SemanticError.new constforblk, "const for upper bound type not number"
+		end
+
+		# Handle 'const-for' instruction block
+		instrlist_handler(constforblk.instrlist, newSymbolTable)
+	end
+
+	def repeat_loop_handler(repeat, symbolTable)
+
+		# Check repeat expression type is number
+		repeatType = expr_handler(repeat.expr, symbolTable)
+		if(not repeatType.eql? "number") then
+			raise SemanticError.new repeat, "repeat expr type not number"
+		end
+
+		# Handle 'repeat' instruction block
+		instrlist_handler(repeat.instrlist, symbolTable)
+	end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -538,6 +698,30 @@ class SemanticError < RuntimeError
 
     	when "variable id not unique in scope"
     		"mira chico eto ta trifasico pero me tas declarando la variable dos veces en el mismo alcance"
+
+    	when "if condition type not boolean"
+    		"menorsa ese if esta como betoso, no me tas dando una condicion booleana"
+
+    	when "while condition type not boolean"
+    		"ete beethoven del while no es boolean"
+
+    	when "for lower bound type not number"
+    		"manubrio el lower bound del for no es number"
+
+    	when "for upper bound type not number"
+    		"chamita ese upper bound del for no es number"
+
+    	when "for increment type not number"
+    		"los reos se soltaron y ese increment del for no es number"
+ 
+    	when "const for lower bound type not number"
+    		"te me quedas tranquilo que ese const for lower bound no es number"
+
+    	when "const for upper bound type not number"
+    		"tranquilo que ese const fot upper bound no es number"
+
+    	when "repeat expr type not number"
+    		"rapidito que melanie me ta apurando: ese expr de repeat no es number"
 
     	end
     end

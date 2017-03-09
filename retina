@@ -66,7 +66,7 @@ def main
 
 		semanticAnalyser = SemanticAnalyser.new ast
 		symbolTable = semanticAnalyser.analyze
-		symbolTable.print_tables()
+		#symbolTable.print_tables()
 	rescue SemanticError => e
 		puts e
 		return

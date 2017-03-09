@@ -506,6 +506,9 @@ end
 
 # Definition of a while node
 class While_loop_node < Instruction_node
+
+    attr_accessor :expr, :instrlist
+
     def initialize(expr, instrlist)
         @expr = expr
         @instrlist = instrlist
@@ -525,6 +528,9 @@ end
 
 # Definition of a for node
 class For_loop_node < Instruction_node
+
+    attr_accessor :counter, :lower_bound, :upper_bound, :increment, :instrlist
+
     def initialize(counter, lower_bound, upper_bound, increment, instrlist)
         @counter = counter
         @lower_bound = lower_bound
@@ -556,6 +562,9 @@ end
 
 # Definition of a for with increment node
 class For_loop_const_node < Instruction_node
+
+    attr_accessor :counter, :lower_bound, :upper_bound, :instrlist
+
     def initialize(counter, lower_bound, upper_bound, instrlist)
         @counter = counter
         @lower_bound = lower_bound
@@ -583,6 +592,9 @@ end
 
 # Definition of a repeat node
 class Repeat_loop_node < Instruction_node
+
+    attr_accessor :expr, :instrlist
+
     def initialize(expr, instrlist)
         @expr = expr
         @instrlist = instrlist
@@ -602,6 +614,9 @@ end
 
 # Definition of a conditional node
 class If_node < Instruction_node
+
+    attr_accessor :cond, :instrlist1, :instrlist2
+
     def initialize(cond, instrlist1, instrlist2)
         @cond = cond
         @instrlist1 = instrlist1
@@ -627,6 +642,9 @@ end
 
 # Definition of a write node
 class Write_node < Instruction_node
+
+    attr_accessor :writelist, :lastitem
+
     def initialize(writelist, lastitem, newline = false)
         @writelist = writelist
         @lastitem = lastitem
@@ -649,6 +667,9 @@ end
 
 # Definition of a write list node
 class Writelist_node < AST_node
+
+    attr_accessor :nxt_write, :cur_write
+
     def initialize(nxt_write, cur_write)
         @nxt_write = nxt_write
         @cur_write = cur_write
@@ -662,6 +683,9 @@ end
 
 # Definition of a read node
 class Read_node < Instruction_node
+
+    attr_accessor :ident
+
     def initialize(ident)
         @ident = ident
     end
