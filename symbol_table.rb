@@ -10,11 +10,11 @@
 
 class SymbolTable
 
-	attr_accessor :name, :children, :enum
+	attr_accessor :id, :name, :children
 
-	def initialize(name = nil, predecessor = nil)
-		@name = name
-		@enum = nil
+	def initialize(id = nil, name = nil, predecessor = nil)
+		@id = id
+		@name = name.upcase
 		@table = Hash.new
 		@predecessor = predecessor
 		@children = Array.new
@@ -78,7 +78,7 @@ class SymbolTable
 		
 		# Table name
 		indent(depth)
-		puts "SCOPE: " + @name.to_s
+		puts "TABLE " + @id.to_s + " " + @name.to_s
 		
 		# "Variables" title
 		indent(depth+1)
@@ -97,9 +97,9 @@ class SymbolTable
 		# "Sub-scopes" title
 		indent(depth+1)
 		if(@children.empty?)
-			puts "SUB-SCOPES: None"
+			puts "SUB-TABLES: None"
 		else
-			puts "SUB-SCOPES:"
+			puts "SUB-TABLES:"
 		end
 		
 		# Print child tables
@@ -120,7 +120,7 @@ end
 class FuncSymbolTable < SymbolTable
 
 	def initialize(name = nil)
-		super(name)
+		super(nil,name)
 		@funcParam = Hash.new
 	end
 

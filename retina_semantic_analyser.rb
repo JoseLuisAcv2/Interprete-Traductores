@@ -1,3 +1,4 @@
+#
 # 	Traductores e Interpretadores CI-3725
 # 	
 # 	Proyecto Fase 3 - Semantic Analyser
@@ -10,8 +11,9 @@
 require_relative 'symbol_table'
 require_relative 'semantic_errors'
 
-$rootTable = SymbolTable.new "Root Table"
-$funcTable = FuncSymbolTable.new
+$rootTable = SymbolTable.new "", "Root Table"
+$funcTable = FuncSymbolTable.new  "Function Table"
+$tableID = Array.new
 $returnFound
 $curFunction
 
@@ -24,12 +26,20 @@ class SemanticAnalyser
 
 	# Analyze AST
 	def analyze()
+
+		# Initialize table IDs
+		$tableID.push(1)
+
 		scope_handler(@ast)
+		
 		return $rootTable
 	end
 
 	# Handle entry point to AST
 	def scope_handler(scope)
+
+		# Store Retina pre-defined functions
+		retinaFunc_handler()
 
 		# Fuction definition block
 		if not scope.defblk.nil? then
@@ -37,7 +47,8 @@ class SemanticAnalyser
 		end
 		# Main program block
 		programblk_handler(scope.programblk, $rootTable)
-		
+		$tableID.pop()
+
 	end
 
 	# Handle function definitions
@@ -91,6 +102,8 @@ class SemanticAnalyser
 		if(not type.eql? "void" and $returnFound.eql? false) then
 			raise SemanticError.new funcdef, "return instruction not found in non-void function"
 		end
+
+		$tableID.pop()
 
 	end
 
@@ -410,7 +423,7 @@ class SemanticAnalyser
 	def withblk_handler(withblk, predSymbolTable)
 
 		# Create new symbol table for with-block scope
-		newSymbolTable = createSymbolTable("withblk",predSymbolTable)
+		newSymbolTable = createSymbolTable("with-block",predSymbolTable)
 
 		# Store newly declared variables in new symbol table
 		declist_handler(withblk.declist, newSymbolTable)
@@ -418,6 +431,7 @@ class SemanticAnalyser
 		# Handle instructions inside with-block
 		instrlist_handler(withblk.instrlist, newSymbolTable)
 
+		$tableID.pop()
 	end
 
 	def declist_handler(declist, symbolTable)
@@ -546,7 +560,7 @@ class SemanticAnalyser
 	def for_loop_handler(forblk, predSymbolTable)
 
 		# Create new symbol table for for-block scope
-		newSymbolTable = createSymbolTable("forblk",predSymbolTable)
+		newSymbolTable = createSymbolTable("for-loop",predSymbolTable)
 
 		# Store for variable in new symbol table
 		newSymbolTable.insert(forblk.counter.name.value, "number")	
@@ -571,12 +585,14 @@ class SemanticAnalyser
 
 		# Handle 'for' instruction block
 		instrlist_handler(forblk.instrlist, newSymbolTable)
+	
+		$tableID.pop()
 	end
 
 	def for_loop_const_handler(constforblk, predSymbolTable)
 
 		# Create new symbol table for const-for-block scope
-		newSymbolTable = createSymbolTable("constforblk",predSymbolTable)
+		newSymbolTable = createSymbolTable("const-for-loop",predSymbolTable)
 
 		# Store const-for variable in new symbol table
 		newSymbolTable.insert(constforblk.counter.name.value, "number")	
@@ -595,6 +611,8 @@ class SemanticAnalyser
 
 		# Handle 'const-for' instruction block
 		instrlist_handler(constforblk.instrlist, newSymbolTable)
+
+		$tableID.pop()
 	end
 
 	def repeat_loop_handler(repeat, symbolTable)
@@ -613,15 +631,46 @@ class SemanticAnalyser
 	def programblk_handler(programblk, symbolTable)
 		
 		# Create new symbol table for program scope
-		newSymbolTable = createSymbolTable("program",symbolTable)		# Handle instructions of program block
+		newSymbolTable = createSymbolTable("program",symbolTable)
+
+		# Handle block of instructions
 		instrlist_handler(programblk.instrlist, newSymbolTable)
+	
+		$tableID.pop()
+	end
+
+	# Store retina pre-defined functions in function symbol table
+	def retinaFunc_handler()
+		$funcTable.insert("home","void",Array[])
+		$funcTable.insert("openeye","void",Array[])
+		$funcTable.insert("closeeye","void",Array[])
+		$funcTable.insert("forward","void",Array[{"ident"=>"steps", "type"=>"number"}])
+		$funcTable.insert("backward","void",Array[{"ident"=>"steps", "type"=>"number"}])
+		$funcTable.insert("rotater","void",Array[{"ident"=>"degree", "type"=>"number"}])
+		$funcTable.insert("rotatel","void",Array[{"ident"=>"degree", "type"=>"number"}])
+		$funcTable.insert("setposition","void",Array[{"ident"=>"x", "type"=>"number"}, {"ident"=>"y", "type"=>"number"}])
+		$funcTable.insert("arc","void",Array[{"ident"=>"degree", "type"=>"number"}, {"ident"=>"radius", "type"=>"number"}])
 	end
 
 	# Create new symbol table
 	def createSymbolTable(name,predecessor)
-		newSymbolTable = SymbolTable.new name
+		
+		# Create new table with corresponding ID
+		lastID = $tableID.pop
+		
+		if(predecessor.name.eql? "ROOT TABLE") then
+			newSymbolTable = SymbolTable.new lastID.to_s, name
+		else
+			newSymbolTable = SymbolTable.new predecessor.id + "." + lastID.to_s, name
+		end
+
+		$tableID.push(lastID+1)
+		$tableID.push(1)
+
+		# Link to predecessor
 		newSymbolTable.set_predecessor(predecessor)
 		predecessor.add_child(newSymbolTable)
+		
 		return newSymbolTable
 	end
 
