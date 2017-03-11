@@ -2,15 +2,14 @@ func g(boolean b, number x)
 begin
 	with
 		number a = 24;
+		number a = 36;
 	do
-		with
-			boolean a = true;
-		do
+		while 24 do
 		end;
 	end;
 end;
 
-func h(number a, boolean hola)
+func g(number a, boolean hola)
 begin
 end;
 
