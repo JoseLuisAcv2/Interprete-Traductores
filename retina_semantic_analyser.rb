@@ -225,7 +225,6 @@ class SemanticAnalyser
 			# Return type doesnt match function type
 			if(not funcType.eql? exprType) then
 				types = [funcType, exprType]
-				puts types
 				raise SemanticError.new instr, "return type doesnt match function type", types
 			end
 		end
