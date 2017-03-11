@@ -17,6 +17,58 @@ begin
 
             with
             do
+
+                with
+                do
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+        
+                        with
+                        do
+                        end;
+
+                    end;
+        
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+
+                end;
+
             end;
 
         end;
@@ -33,6 +85,22 @@ begin
         for i from 1 to 3 by 1 do
 
             for i from 1 to 3 do
+
+                with
+                do
+
+                    #trambolico();
+
+                end;
+            
+                with
+                do
+                end;
+            
+                with
+                do
+                end;
+
             end;
         
             for i from 1 to 3 do

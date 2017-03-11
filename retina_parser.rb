@@ -761,28 +761,28 @@ module_eval(<<'.,.,', 'retina_parser.y', 50)
 
 module_eval(<<'.,.,', 'retina_parser.y', 56)
   def _reduce_6(val, _values, result)
-    result = Funcdef_node.new(val[1],val[3],Type_node.new(nil),val[6])
+    result = Funcdef_node.new(val[0], val[1],val[3],Type_node.new(nil),val[6])
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'retina_parser.y', 57)
   def _reduce_7(val, _values, result)
-    result = Funcdef_node.new(val[1],val[3],val[6],val[8])
+    result = Funcdef_node.new(val[0], val[1],val[3],val[6],val[8])
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'retina_parser.y', 58)
   def _reduce_8(val, _values, result)
-    result = Funcdef_node.new(val[1],nil,Type_node.new(nil),val[5])
+    result = Funcdef_node.new(val[0], val[1],nil,Type_node.new(nil),val[5])
     result
   end
 .,.,
 
 module_eval(<<'.,.,', 'retina_parser.y', 59)
   def _reduce_9(val, _values, result)
-    result = Funcdef_node.new(val[1],nil,val[5],val[7])
+    result = Funcdef_node.new(val[0], val[1],nil,val[5],val[7])
     result
   end
 .,.,

@@ -80,9 +80,10 @@ end
 # Definition of a function declaration node
 class Funcdef_node < Instruction_node
 
-    attr_accessor :ident, :paramlist, :type, :instrlist
+    attr_accessor :func, :ident, :paramlist, :type, :instrlist
 
-    def initialize(ident, paramlist, type, instrlist)
+    def initialize(func, ident, paramlist, type, instrlist)
+        @func = func
         @ident = ident
         @paramlist = paramlist
         @type = type

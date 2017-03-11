@@ -85,7 +85,7 @@ class SemanticAnalyser
 
 			# Store parameters in symbol table
 			params = Array.new
-			params = paramlist_handler(funcdef.paramlist, newSymbolTable, params) unless funcdef.paramlist.nil?
+			params = paramlist_handler(funcdef, funcdef.paramlist, newSymbolTable, params) unless funcdef.paramlist.nil?
 
 			# Insert function name with return type and parameters in functions table
 			$funcTable.insert(ident,type,params)
@@ -107,19 +107,19 @@ class SemanticAnalyser
 
 	end
 
-	def paramlist_handler(paramlist, symbolTable, params)
+	def paramlist_handler(funcdef, paramlist, symbolTable, params)
 		# Store parameter in function table
-		param = param_handler(paramlist.param, symbolTable) unless paramlist.param.nil?
+		param = param_handler(funcdef, paramlist.param, symbolTable) unless paramlist.param.nil?
 		params << param
 
 		# Rest of parameters
-		params = paramlist_handler(paramlist.paramlist, symbolTable, params) unless paramlist.paramlist.nil?
+		params = paramlist_handler(funcdef, paramlist.paramlist, symbolTable, params) unless paramlist.paramlist.nil?
 	
 		return params
 
 	end
 
-	def param_handler(param, symbolTable)
+	def param_handler(funcdef, param, symbolTable)
 
 		ident = param.ident.name.value
 		type = param.type.type.value
@@ -129,7 +129,7 @@ class SemanticAnalyser
 			symbolTable.insert(ident,type)
 		# Parameter identifier not unique
 		else
-			raise SemanticError.new param, "parameter id not unique"
+			raise SemanticError.new param, "parameter id not unique", Array[funcdef]
 		end
 
 		return {"ident"=>ident, "type"=>type}

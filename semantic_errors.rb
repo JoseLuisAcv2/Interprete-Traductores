@@ -9,9 +9,10 @@
 
 class SemanticError < RuntimeError
 
-    def initialize(tok, errorType)
+    def initialize(tok, errorType, extraInfo = nil)
         @token = tok
         @errorType = errorType
+        @extraInfo = extraInfo
     end
 
     def to_s
@@ -20,10 +21,10 @@ class SemanticError < RuntimeError
     	# Print message according to error type
     	case @errorType
     	when "function id not unique"
-    		"epa funcion id ya usada"
+    		"LINE " + @token.func.line.to_s + ", COLUMN " + @token.func.column.to_s + ": function '" + @token.ident.name.value.to_s + "' already declared."
     	
     	when "parameter id not unique"
-    		"epa parametro id repetido"
+    		"LINE " + @extraInfo[0].func.line.to_s + ": parameter identifier '" + @token.ident.name.value.to_s + "' not unique in function '" + @extraInfo[0].ident.name.value.to_s + "'."
     	
     	when "variable not declared"
     		"epa eta variable no ta declarada menolsa"
