@@ -54,10 +54,10 @@ class Parser
         # Function Definitions. Defines all possible structures of a valid
         # function definition in Retina
         funcdef
-        : FUNC ident LPARENTH paramlist RPARENTH BEGINBLK funcinstr ENDBLK SEP                      {result = Funcdef_node.new(val[1],val[3],Type_node.new(nil),val[6])}
-        | FUNC ident LPARENTH paramlist RPARENTH RETURNTYPE datatype BEGINBLK funcinstr ENDBLK SEP  {result = Funcdef_node.new(val[1],val[3],val[6],val[8])}
-        | FUNC ident LPARENTH RPARENTH BEGINBLK funcinstr ENDBLK SEP                                {result = Funcdef_node.new(val[1],nil,Type_node.new(nil),val[5])}
-        | FUNC ident LPARENTH RPARENTH RETURNTYPE datatype BEGINBLK funcinstr ENDBLK SEP            {result = Funcdef_node.new(val[1],nil,val[5],val[7])}
+        : FUNC ident LPARENTH paramlist RPARENTH BEGINBLK funcinstr ENDBLK SEP                      {result = Funcdef_node.new(val[0], val[1],val[3],Type_node.new(nil),val[6])}
+        | FUNC ident LPARENTH paramlist RPARENTH RETURNTYPE datatype BEGINBLK funcinstr ENDBLK SEP  {result = Funcdef_node.new(val[0], val[1],val[3],val[6],val[8])}
+        | FUNC ident LPARENTH RPARENTH BEGINBLK funcinstr ENDBLK SEP                                {result = Funcdef_node.new(val[0], val[1],nil,Type_node.new(nil),val[5])}
+        | FUNC ident LPARENTH RPARENTH RETURNTYPE datatype BEGINBLK funcinstr ENDBLK SEP            {result = Funcdef_node.new(val[0], val[1],nil,val[5],val[7])}
         ;
         
         # With-Do Block: Defines the structure of a with-do block in retina
@@ -261,6 +261,7 @@ class SyntacticError < RuntimeError
     end
 
     def to_s
+        puts "SYNTACTIC ERROR FOUND:"
         if @token.eql? "$" then
             "Unexpected EOF"
         else

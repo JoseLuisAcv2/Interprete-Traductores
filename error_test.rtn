@@ -1,0 +1,10 @@
+func g()
+begin
+end;
+
+func f(number hola,number a, boolean hola)
+begin
+end;
+
+program 
+end;

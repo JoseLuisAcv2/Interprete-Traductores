@@ -55,25 +55,16 @@ def main
 		return
 	end
 
-	############################################
-	############## codeando aqui ###############
-	############################################
+	# Create symbol table for the AST returned by the parser and
+	# make semantic verifications
 	begin
-		
-		#ast.print_ast
-
 		semanticAnalyser = SemanticAnalyser.new ast
 		symbolTable = semanticAnalyser.analyze
-
-		#symbolTable.print_table()
-
-	rescue SyntacticError => e
+		symbolTable.print_tables()
+	rescue SemanticError => e
 		puts e
 		return
 	end
-	############################################
-	############################################
-	############################################
 
 end
 

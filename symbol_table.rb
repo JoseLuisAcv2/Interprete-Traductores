@@ -10,8 +10,11 @@
 
 class SymbolTable
 
-	def initialize(name = nil, predecessor = nil)
-		@name = name
+	attr_accessor :id, :name, :children
+
+	def initialize(id = nil, name = nil, predecessor = nil)
+		@id = id
+		@name = name.upcase
 		@table = Hash.new
 		@predecessor = predecessor
 		@children = Array.new
@@ -21,6 +24,10 @@ class SymbolTable
 		@table.store(key, value)
 	end
 
+	def delete(key)
+		@table.delete(key)
+	end
+
 	def lookup(key)
 		if(has_key(key))
 			return @table[key]
@@ -28,6 +35,18 @@ class SymbolTable
 			return @predecessor.lookup(key)
 		else
 			return nil
+		end
+	end
+
+	def update(key, value)
+		if !(has_key(key))
+			if (@predecessor != nil)
+				return father.lookup(key)
+			else
+				return nil
+			end
+		else
+			return @table[key]
 		end
 	end
 
@@ -47,25 +66,71 @@ class SymbolTable
 		@children << child_table
 	end
 
-	def print_table()
-		puts "Imprimir tabla simbolos"
+	def print_tables()
+		puts "SYMBOL TABLES"
+		@children.each do |child|
+			puts "\n"
+			child.print_table()
+		end	
 	end
+
+	def print_table(depth = 0)
+		
+		# Table name
+		indent(depth)
+		puts "TABLE " + @id.to_s + " " + @name.to_s
+		
+		# "Variables" title
+		indent(depth+1)
+		if(@table.empty?)
+			puts "VARIABLES: None"
+		else
+			puts "VARIABLES:"
+		end
+
+		# Print table variables
+		@table.each do |ident, type|
+			indent(depth+2)
+			puts ident.to_s + " : " + type.to_s
+		end
+		
+		# "Sub-scopes" title
+		indent(depth+1)
+		if(@children.empty?)
+			puts "SUB-TABLES: None"
+		else
+			puts "SUB-TABLES:"
+		end
+		
+		# Print child tables
+		@children.each do |child|
+			child.print_table(depth+2)
+		end	
+	end
+
+	# Indent output
+	def indent(ind)
+        for i in 1..ind
+            print "\t"
+        end
+    end
 
 end
 
 class FuncSymbolTable < SymbolTable
 
 	def initialize(name = nil)
-		super(name)
-		@funcTable = Hash.new
+		super(nil,name)
+		@funcParam = Hash.new
 	end
 
-	def get_funcTable(func)
-		return @funcTable[func]
+	def get_funcParams(func)
+		return @funcParam[func]
 	end
 
-	def attach(func,func_table)
-		@funcTable.store(func,func_table)
+	def insert(func,type,params)
+		super(func,type)
+		@funcParam[func] = params		
 	end
 
 end

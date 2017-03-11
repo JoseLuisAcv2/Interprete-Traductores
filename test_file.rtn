@@ -1,26 +1,153 @@
-func min(number x, number y) -> number
+func prueba(number a)
+begin
+
+    with
+    do
+    end;
+
+    with
+    do
+
+        with
+        do
+        end;
+
+        with
+        do
+
+            with
+            do
+
+                with
+                do
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+        
+                        with
+                        do
+                        end;
+
+                    end;
+        
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+
+                end;
+
+            end;
+
+        end;
+
+        with
+        do
+        end;
+
+    end;
+
+    with
+    do
+
+        for i from 1 to 3 by 1 do
+
+            for i from 1 to 3 do
+
+                with
+                do
+
+                    #trambolico();
+
+                end;
+            
+                with
+                do
+                end;
+            
+                with
+                do
+                end;
+
+            end;
+        
+            for i from 1 to 3 do
+            end;
+
+        end;
+
+    end;
+
+    with
+    do
+    end;
+
+    with
+    do
+    end;
+
+end;
+
+func min(number x, number y, boolean z) -> number
 begin
     with
-        boolean b;
+        boolean b = true;
+        number a;
+        number c = 1;
     do
-        b = x < y;
-        if b then
-            return x;
+        for i from min(1,2,true) to 2+1 by 3 do
+            repeat i times
+                min(1,2,true);
+                a;
+            end;
+            return 2;
         end;
-        return y;
     end;
 end;
 
-func incremental_forward(number steps)
+func inc(number steps)
 begin
-    for i from 1 to steps do
-        forward(i);
-    end;
+    arc(1,2);
+    steps;
 end;
 
 func circle(number radio)
 begin
-    arc(360, radio);
+    while 1>2 do
+        return;
+    end;
 end;
 
 program
@@ -33,7 +160,7 @@ program
             number angle = n;
         do
             while angle <= 360 do
-                rotater(n);
+                #rotater(n);
                 circle(100);
                 angle = angle + n;
             end;
