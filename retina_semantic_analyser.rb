@@ -216,7 +216,7 @@ class SemanticAnalyser
 	
 			# Error if function return type is void
 			if(funcType.eql? "void") then
-				raise SemanticError.new instr, "return instruction in void function", funcType
+				raise SemanticError.new instr, "return instruction in void function", $curFunction
 			end
 	
 			# Get return expression type
