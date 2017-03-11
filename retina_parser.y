@@ -79,30 +79,30 @@ class Parser
 
         # Iterators: Defines the structure of valid iterators in Retina
         iter
-        : WHILE expr DO instr ENDBLK                                {result = While_loop_node.new(val[1],val[3])}
-        | FOR ident FROM expr TO expr BY expr DO instr ENDBLK       {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])}
-        | FOR ident FROM expr TO expr DO instr ENDBLK               {result = For_loop_const_node.new(val[1],val[3],val[5],val[7])}
-        | REPEAT expr TIMES instr ENDBLK                            {result = Repeat_loop_node.new(val[1],val[3])}
+        : WHILE expr DO instr ENDBLK                                {result = While_loop_node.new(val[1],val[3],val[0])}
+        | FOR ident FROM expr TO expr BY expr DO instr ENDBLK       {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9],val[0])}
+        | FOR ident FROM expr TO expr DO instr ENDBLK               {result = For_loop_const_node.new(val[1],val[3],val[5],val[7],val[0])}
+        | REPEAT expr TIMES instr ENDBLK                            {result = Repeat_loop_node.new(val[1],val[3],val[0])}
         ;
 
         # Function Iterators: Iterators that allow return instructions for functions in Retina
         funciter
-        : WHILE expr DO funcinstr ENDBLK                            {result = While_loop_node.new(val[1],val[3])}
-        | FOR ident FROM expr TO expr BY expr DO funcinstr ENDBLK   {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9])}
-        | FOR ident FROM expr TO expr DO funcinstr ENDBLK           {result = For_loop_const_node.new(val[1],val[3],val[5],val[7])}
-        | REPEAT expr TIMES funcinstr ENDBLK                        {result = Repeat_loop_node.new(val[1],val[3])}
+        : WHILE expr DO funcinstr ENDBLK                            {result = While_loop_node.new(val[1],val[3],val[0])}
+        | FOR ident FROM expr TO expr BY expr DO funcinstr ENDBLK   {result = For_loop_node.new(val[1],val[3],val[5],val[7],val[9],val[0])}
+        | FOR ident FROM expr TO expr DO funcinstr ENDBLK           {result = For_loop_const_node.new(val[1],val[3],val[5],val[7],val[0])}
+        | REPEAT expr TIMES funcinstr ENDBLK                        {result = Repeat_loop_node.new(val[1],val[3],val[0])}
         ;
 
         # Conditionals: Defines the structure of valid conditionals in Retina
         cond
-        : IF expr THEN instr ENDBLK                                 {result = If_node.new(val[1],val[3],nil)}
-        | IF expr THEN instr ELSE instr ENDBLK                      {result = If_node.new(val[1],val[3],val[5])}
+        : IF expr THEN instr ENDBLK                                 {result = If_node.new(val[1],val[3],nil,val[0])}
+        | IF expr THEN instr ELSE instr ENDBLK                      {result = If_node.new(val[1],val[3],val[5],val[0])}
         ;
 
         # Function Conditionals: Conditionals that allow return instructions for functions in Retina
         funccond
-        : IF expr THEN funcinstr ENDBLK                             {result = If_node.new(val[1],val[3],nil)}
-        | IF expr THEN funcinstr ELSE funcinstr ENDBLK              {result = If_node.new(val[1],val[3],val[5])}
+        : IF expr THEN funcinstr ENDBLK                             {result = If_node.new(val[1],val[3],nil,val[0])}
+        | IF expr THEN funcinstr ELSE funcinstr ENDBLK              {result = If_node.new(val[1],val[3],val[5],val[0])}
         ;
 
         # Instructions: Defines the structure for all possible instructions in Retina
@@ -187,34 +187,34 @@ class Parser
 
         # Assigns: Defines valid assignments in Retina
         assign
-        : ident ASSIGNOP expr               {result = Assignop_node.new(val[0],val[2])}
+        : ident ASSIGNOP expr               {result = Assignop_node.new(val[0],val[2],val[1])}
         ;
 
         # Return Instruction: Defines valid return instructions in Retina
         returnblk
-        : RETURN                            {result = Return_node.new(nil)}
-        | RETURN expr                       {result = Return_node.new(val[1])}
+        : RETURN                            {result = Return_node.new(val[0],nil)}
+        | RETURN expr                       {result = Return_node.new(val[0],val[1])}
         ;
 
         # Expressions: Defines the list of valid expressions in Retina
         expr
-        : expr AND expr                     {result = Logical_bin_expr_node.new(val[0],val[2],'CONJUNCTION')}
-        | expr OR expr                      {result = Logical_bin_expr_node.new(val[0],val[2],'DISJUNCTION')}
-        | NOT expr                          {result = Logical_un_expr_node.new(val[1],'LOGICAL NEGATION')}
-        | expr EQOP expr                    {result = Comp_expr_node.new(val[0],val[2],'EQUALITY')}
-        | expr INEQOP expr                  {result = Comp_expr_node.new(val[0],val[2],'INEQUALITY')}
-        | expr GTOP expr                    {result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN')}
-        | expr GEOP expr                    {result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN OR EQUAL')}
-        | expr LTOP expr                    {result = Comp_expr_node.new(val[0],val[2],'LESS THAN')}
-        | expr LEOP expr                    {result = Comp_expr_node.new(val[0],val[2],'LESS THAN OR EQUAL')}
-        | expr MULT expr                    {result = Arith_bin_expr_node.new(val[0],val[2],'MULTIPLICATION')}
-        | expr DIV expr                     {result = Arith_bin_expr_node.new(val[0],val[2],'EXACT DIVISION')}
-        | expr INTDIV expr                  {result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER DIVISION')}
-        | expr MOD expr                     {result = Arith_bin_expr_node.new(val[0],val[2],'EXACT MODULO')}
-        | expr INTMOD expr                  {result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER MODULO')}
-        | expr PLUS expr                    {result = Arith_bin_expr_node.new(val[0],val[2],'ADDITION')}
-        | expr MINUS expr                   {result = Arith_bin_expr_node.new(val[0],val[2],'SUBTRACTION')}
-        | MINUS expr =UMINUS                {result = Arith_un_expr_node.new(val[1],'ARITHMETIC NEGATION')}
+        : expr AND expr                     {result = Logical_bin_expr_node.new(val[0],val[2],'CONJUNCTION',val[1])}
+        | expr OR expr                      {result = Logical_bin_expr_node.new(val[0],val[2],'DISJUNCTION',val[1])}
+        | NOT expr                          {result = Logical_un_expr_node.new(val[1],'LOGICAL NEGATION',val[0])}
+        | expr EQOP expr                    {result = Comp_expr_node.new(val[0],val[2],'EQUALITY',val[1])}
+        | expr INEQOP expr                  {result = Comp_expr_node.new(val[0],val[2],'INEQUALITY',val[1])}
+        | expr GTOP expr                    {result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN',val[1])}
+        | expr GEOP expr                    {result = Comp_expr_node.new(val[0],val[2],'GREATHER THAN OR EQUAL',val[1])}
+        | expr LTOP expr                    {result = Comp_expr_node.new(val[0],val[2],'LESS THAN',val[1])}
+        | expr LEOP expr                    {result = Comp_expr_node.new(val[0],val[2],'LESS THAN OR EQUAL',val[1])}
+        | expr MULT expr                    {result = Arith_bin_expr_node.new(val[0],val[2],'MULTIPLICATION',val[1])}
+        | expr DIV expr                     {result = Arith_bin_expr_node.new(val[0],val[2],'EXACT DIVISION',val[1])}
+        | expr INTDIV expr                  {result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER DIVISION',val[1])}
+        | expr MOD expr                     {result = Arith_bin_expr_node.new(val[0],val[2],'EXACT MODULO',val[1])}
+        | expr INTMOD expr                  {result = Arith_bin_expr_node.new(val[0],val[2],'INTEGER MODULO',val[1])}
+        | expr PLUS expr                    {result = Arith_bin_expr_node.new(val[0],val[2],'ADDITION',val[1])}
+        | expr MINUS expr                   {result = Arith_bin_expr_node.new(val[0],val[2],'SUBTRACTION',val[1])}
+        | MINUS expr =UMINUS                {result = Arith_un_expr_node.new(val[1],'ARITHMETIC NEGATION',val[0])}
         | LPARENTH expr RPARENTH =PRNTS     {result = val[1]}
         | b                                 
         | n                                 

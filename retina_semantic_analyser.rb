@@ -207,7 +207,7 @@ class SemanticAnalyser
 		if(instr.expr.nil?) then
 			# Error if function return type is number or boolean
 			if(not funcType.eql? "void") then
-				raise SemanticError.new funcType, "empty return instruction in non-void function"
+				raise SemanticError.new instr, "empty return instruction in non-void function", funcType
 			end			
 
 		else	
@@ -216,7 +216,7 @@ class SemanticAnalyser
 	
 			# Error if function return type is void
 			if(funcType.eql? "void") then
-				raise SemanticError.new funcType, "return instruction in void function"
+				raise SemanticError.new instr, "return instruction in void function", funcType
 			end
 	
 			# Get return expression type
@@ -224,7 +224,9 @@ class SemanticAnalyser
 	
 			# Return type doesnt match function type
 			if(not funcType.eql? exprType) then
-				raise SemanticError.new exprType, "return type doesnt match function type"
+				types = [funcType, exprType]
+				puts types
+				raise SemanticError.new instr, "return type doesnt match function type", types
 			end
 		end
 	end
@@ -264,7 +266,7 @@ class SemanticAnalyser
 		name = identifier.name.value
 		# Variable not declared
 		if(symbolTable.lookup(name).nil?) then
-			raise SemanticError.new name, "variable not declared"
+			raise SemanticError.new identifier, "variable not declared"
 		# Return variable type
 		else
 			return symbolTable.lookup(name)
@@ -365,7 +367,7 @@ class SemanticAnalyser
 			funcParams.each do |param|
 				params << param
 			end
-			arglist_handler(instr.arglist, params, symbolTable)
+			arglist_handler(instr.arglist, params, params.length, instr, symbolTable)
 		
 			# Return function return type
 			return $funcTable.lookup(ident)
@@ -376,32 +378,34 @@ class SemanticAnalyser
 		end
 	end
 
-	def arglist_handler(args, params, symbolTable)
+	def arglist_handler(args, params, expectedArgs, instr, symbolTable)
 		
 		if(args.nil?) then
 			
 			# Empty argument list and not empty parameter list
 			if(params.any?) then
-				raise SemanticError.new params, "function call not enough arguments"
+				raise SemanticError.new instr, "function call not enough arguments", expectedArgs
 			end
 		
 		else
 			
 			# Not empty argument list and empty parameter list
 			if(not params.any?) then
-				raise SemanticError.new params, "function call too many arguments"
+				raise SemanticError.new instr, "function call too many arguments", expectedArgs
 			else
 				# Check correct argument type in function call
 				arg = args.arg
 				argType = expr_handler(arg, symbolTable)
-				
+				argIndex = expectedArgs - params.length
+
 				param = params.shift
 				paramType = param["type"]
 				
 				if(not argType.eql? paramType) then
-					raise SemanticError.new param, "function call argument type mismatch"
+					errInfo = [argIndex, argType, paramType]
+					raise SemanticError.new instr, "function call argument type mismatch", errInfo
 				end
-				arglist_handler(args.arglist,params,symbolTable)
+				arglist_handler(args.arglist,params,expectedArgs,instr,symbolTable)
 			end			
 		end
 	end
@@ -416,7 +420,8 @@ class SemanticAnalyser
 
 		# Check variable type and expression type are equal
 		if(not identType.eql? exprType) then
-			raise SemanticError.new instr, "assign op variable and expression types are not equal"
+			types = [identType, exprType]
+			raise SemanticError.new instr, "assign op variable and expression types are not equal", types
 		end
 	end
 
@@ -469,7 +474,7 @@ class SemanticAnalyser
 		
 			# Variable already declared in scope
 			else
-				raise SemanticError.new decl, "variable id not unique in scope"
+				raise SemanticError.new decl.assign.ident, "variable id not unique in scope"
 			end
 		end
 	end
@@ -485,7 +490,7 @@ class SemanticAnalyser
 			symbolTable.insert(ident, type)
 		# Variable already declared in scope
 		else
-			raise SemanticError.new ident, "variable id not unique in scope"
+			raise SemanticError.new identlist.nxt_ident, "variable id not unique in scope"
 		end
 
 		# Handle following identifiers
@@ -600,13 +605,13 @@ class SemanticAnalyser
 		# Check lower bound expression type is number
 		lowerBoundType = expr_handler(constforblk.lower_bound, newSymbolTable)
 		if(not lowerBoundType.eql? "number") then
-			raise SemanticError.new constforblk, "const for lower bound type not number"
+			raise SemanticError.new constforblk, "for lower bound type not number"
 		end
 
 		# Check upper bound expression type is number
 		upperBoundType = expr_handler(constforblk.upper_bound, newSymbolTable)
 		if(not upperBoundType.eql? "number") then
-			raise SemanticError.new constforblk, "const for upper bound type not number"
+			raise SemanticError.new constforblk, "for upper bound type not number"
 		end
 
 		# Handle 'const-for' instruction block

@@ -27,80 +27,73 @@ class SemanticError < RuntimeError
     		"LINE " + @extraInfo[0].func.line.to_s + ": parameter identifier '" + @token.ident.name.value.to_s + "' not unique in function '" + @extraInfo[0].ident.name.value.to_s + "'."
     	
     	when "variable not declared"
-    		"epa eta variable no ta declarada menolsa"
-    	
-    	when "return type doesnt match function type"
-    		"ese return no coincide con la funcion papa"
+            "LINE " + @token.name.line.to_s + ": variable '" + @token.name.value.to_s + "' not declared."
+        
+        when "return type doesnt match function type"
+            "LINE " + @token.ret.line.to_s + ": Return value type does not match the function type. Expected '" + @extraInfo[0] + "' type but '" + @extraInfo[1] + "' type found."
 
-		when "empty return instruction in non-void function"
-    		"mira esta funcion es number o boolean y me tienes un return sin nada"
+        when "empty return instruction in non-void function"
+            "LINE " + @token.ret.line.to_s + ": Return value type does not match the function type. Expected '" + @extraInfo + "' type but void found."
 
-    	when "return instruction in void function"
-    		"esperate, esa funcion es void y hay un return"
-    	
-    	when "return instruction not found in non-void function"
-    		"mira chico esa funcion non-void no tiene return"
-    	
-    	when "logical bin expr operand types are not boolean"
-    		"te voy a deci una vaina, y te la voy a decir 1 vez, esa expr log bin sus operandos no soon bool"
-    	
-    	when "logical un expr operand type is not boolean"
-    		"mira. le pusiste un not a un numero mamawebo"
-    	
-    	when "arith bin expr operand types are not number"
-    		"verga chamo, no me estes sumando true + true"
-    	
-    	when "arith un expr operand type is not number"
-    		"cuidao.. no me estes haciendo -true"
+        when "return instruction in void function"
+            "LINE " + @token.ret.line.to_s + ": Non void return statement in void type function."
+                    
+        when "return instruction not found in non-void function"
+            "LINE " + @token.func.line.to_s + ": Missing return statement in function '" + @token.ident.name.value.to_s + "'."
+        
+        when "logical bin expr operand types are not boolean"
+            "LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": '" + @token.op_token.value + "' operator can only be applied to boolean expressions."
+        
+        when "logical un expr operand type is not boolean"
+            "LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": 'not' operator can only be applied to boolean expressions."
+        
+        when "arith bin expr operand types are not number"
+            "LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": '" + @token.op_token.value + "' operator can only be applied to number expressions."
+        
+        when "arith un expr operand type is not number"
+            "LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": '-' operator can only be applied to number expressions."
 
-    	when "equality comp expr operand types are not equal"
-    		"chamo se consecuente con los tipos. Kejeso de igualar numbers y booleans"
+        when "equality comp expr operand types are not equal"
+            "LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": '" + @token.op_token.value + "' comparator can only be applied to same types expressions."
 
-    	when "order comp expr operand types are not numbers"
-    		"la cagaste pues, solo se puede ordenar numbers"
-    		
-    	when "function not declared"
-    		"no seas imbecil, si vas a llamar la funcion, declarala primero"
+        when "order comp expr operand types are not numbers"
+            "LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": '" + @token.op_token.value + "' comparator can only be applied to number expressions."
+            
+        when "function not declared"
+    		"LINE " + @token.ident.name.line.to_s + ", COLUMN " + @token.ident.name.column.to_s + ": function '" + @token.ident.name.value.to_s + "' not declared."
 
     	when "function call not enough arguments"
-    		"no seas caleta y pasame mas argumentos"
+            "LINE " + @token.ident.name.line.to_s + ", COLUMN " + @token.ident.name.column.to_s + ": not enough arguments for function '" + @token.ident.name.value.to_s + "', " + @extraInfo.to_s + " expected."
 
-    	when "function call too many arguments"
-    		"no me metas mas de la cuenta papa"
+        when "function call too many arguments"
+            "LINE " + @token.ident.name.line.to_s + ", COLUMN " + @token.ident.name.column.to_s + ": to many arguments for function '" + @token.ident.name.value.to_s + "', " + @extraInfo.to_s + " expected."
 
-    	when "function call argument type mismatch"
-    		"chamo el tipo de ese argumento no corresponde con el tipo esperado"
+        when "function call argument type mismatch"
+            "LINE " + @token.ident.name.line.to_s + ", COLUMN " + @token.ident.name.column.to_s + ": argument " + @extraInfo[0].to_s + " for function '" + @token.ident.name.value.to_s + "' must be '" + @extraInfo[2] + "' but '" + @extraInfo[1] + "' expression given."
 
     	when "assign op variable and expression types are not equal"
-    		"que broma chico, en esta asignacion los tipos de var y expr no coinciden"
+            "LINE " + @token.op_token.line.to_s + ": cannot assign " + @extraInfo[1] + " expression to " + @extraInfo[0] + " variable."
 
     	when "variable id not unique in scope"
-    		"mira chico eto ta trifasico pero me tas declarando la variable dos veces en el mismo alcance"
+            "LINE " + @token.name.line.to_s + ", COLUMN " + @token.name.column.to_s + ": variable '" + @token.name.value + "' already declared."
 
     	when "if condition type not boolean"
-    		"menorsa ese if esta como betoso, no me tas dando una condicion booleana"
+            "LINE " + @token.if.line.to_s + ": if condition must be boolean."
 
-    	when "while condition type not boolean"
-    		"ete beethoven del while no es boolean"
+        when "while condition type not boolean"
+            "LINE " + @token.whileTkn.line.to_s + ": while condition must be boolean."
 
     	when "for lower bound type not number"
-    		"manubrio el lower bound del for no es number"
+            "LINE " + @token.forTkn.line.to_s + ": for lower bound must be number."
 
-    	when "for upper bound type not number"
-    		"chamita ese upper bound del for no es number"
+        when "for upper bound type not number"
+            "LINE " + @token.forTkn.line.to_s + ": for upper bound must be number."
 
-    	when "for increment type not number"
-    		"los reos se soltaron y ese increment del for no es number"
- 
-    	when "const for lower bound type not number"
-    		"te me quedas tranquilo que ese const for lower bound no es number"
+        when "for increment type not number"
+            "LINE " + @token.forTkn.line.to_s + ": for increment must be number."
 
-    	when "const for upper bound type not number"
-    		"tranquilo que ese const fot upper bound no es number"
-
-    	when "repeat expr type not number"
-    		"rapidito que melanie me ta apurando: ese expr de repeat no es number"
-
+        when "repeat expr type not number"
+    		"LINE " + @token.rpTkn.line.to_s + ": repeat expression must be number."
     	end
     end
 end

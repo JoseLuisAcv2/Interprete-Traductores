@@ -1,8 +1,16 @@
-func g()
+func g(boolean b, number x)
 begin
+	with
+		number a = 24;
+	do
+		with
+			boolean a = true;
+		do
+		end;
+	end;
 end;
 
-func f(number hola,number a, boolean hola)
+func h(number a, boolean hola)
 begin
 end;
 

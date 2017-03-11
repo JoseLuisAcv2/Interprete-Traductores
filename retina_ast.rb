@@ -237,9 +237,10 @@ end
 # Definition of a return node
 class Return_node < Instruction_node
 
-    attr_accessor :expr
+    attr_accessor :ret, :expr
 
-    def initialize(expr = nil)
+    def initialize(ret, expr = nil)
+        @ret = ret
         @expr = expr
     end
 
@@ -258,12 +259,13 @@ end
 # Definition of a logical binary expression node
 class Logical_bin_expr_node < Bin_expr_node;
 
-    attr_accessor :left, :right, :op
+    attr_accessor :left, :right, :op, :op_token
 
-    def initialize(left, right, op)
+    def initialize(left, right, op, op_token = nil)
         @left = left
         @right = right
         @op = op
+        @op_token = op_token
     end
 
     def print_ast(ind)
@@ -281,11 +283,12 @@ end
 # Definition of a unary logical expression node
 class Logical_un_expr_node < Un_expr_node;
 
-    attr_accessor :operand, :operator
+    attr_accessor :operand, :operator, :op_token
 
-    def initialize(operand, operator)
+    def initialize(operand, operator, op_token)
         @operand = operand
         @operator = operator
+        @op_token = op_token
     end
 
     def print_ast(ind)
@@ -300,12 +303,13 @@ end
 # Definition of a arithmethic binary expression node
 class Arith_bin_expr_node < Bin_expr_node;
 
-    attr_accessor :left, :right, :op
+    attr_accessor :left, :right, :op, :op_token
 
-    def initialize(left, right, op)
+    def initialize(left, right, op, op_token)
         @left = left
         @right = right
         @op = op
+        @op_token = op_token
     end
 
     def print_ast(ind)
@@ -323,11 +327,12 @@ end
 # Definition of a arithmethic unary expression node
 class Arith_un_expr_node < Un_expr_node;
 
-    attr_accessor :operand, :operator
+    attr_accessor :operand, :operator, :op_token
 
-    def initialize(operand, operator)
+    def initialize(operand, operator, op_token)
         @operand = operand
         @operator = operator
+        @op_token = op_token
     end
 
     def print_ast(ind)
@@ -342,12 +347,13 @@ end
 # Definition of a comparator expression node
 class Comp_expr_node < Bin_expr_node;
 
-    attr_accessor :left, :right, :op 
+    attr_accessor :left, :right, :op, :op_token 
 
-    def initialize(left, right, op)
+    def initialize(left, right, op, op_token)
         @left = left
         @right = right
         @op = op
+        @op_token = op_token
     end
 
     def print_ast(ind)
@@ -406,11 +412,12 @@ end
 # Definition of a assign instruction node
 class Assignop_node < Instruction_node
     
-    attr_accessor :ident, :expr
+    attr_accessor :ident, :expr, :op_token
 
-    def initialize(ident, expr)
+    def initialize(ident, expr, op_token)
         @ident = ident
         @expr = expr
+        @op_token = op_token
     end
 
     def print_ast(ind)
@@ -508,11 +515,12 @@ end
 # Definition of a while node
 class While_loop_node < Instruction_node
 
-    attr_accessor :expr, :instrlist
+    attr_accessor :expr, :instrlist, :whileTkn
 
-    def initialize(expr, instrlist)
+    def initialize(expr, instrlist, whileTkn)
         @expr = expr
         @instrlist = instrlist
+        @whileTkn = whileTkn
     end
 
     def print_ast(ind)
@@ -530,14 +538,15 @@ end
 # Definition of a for node
 class For_loop_node < Instruction_node
 
-    attr_accessor :counter, :lower_bound, :upper_bound, :increment, :instrlist
+    attr_accessor :counter, :lower_bound, :upper_bound, :increment, :instrlist, :forTkn
 
-    def initialize(counter, lower_bound, upper_bound, increment, instrlist)
+    def initialize(counter, lower_bound, upper_bound, increment, instrlist, forTkn)
         @counter = counter
         @lower_bound = lower_bound
         @upper_bound = upper_bound
         @increment = increment
         @instrlist = instrlist
+        @forTkn = forTkn
     end
 
     def print_ast(ind)
@@ -564,13 +573,14 @@ end
 # Definition of a for with increment node
 class For_loop_const_node < Instruction_node
 
-    attr_accessor :counter, :lower_bound, :upper_bound, :instrlist
+    attr_accessor :counter, :lower_bound, :upper_bound, :instrlist, :forTkn
 
-    def initialize(counter, lower_bound, upper_bound, instrlist)
+    def initialize(counter, lower_bound, upper_bound, instrlist, forTkn)
         @counter = counter
         @lower_bound = lower_bound
         @upper_bound = upper_bound
         @instrlist = instrlist
+        @forTkn = forTkn
     end
 
     def print_ast(ind)
@@ -594,11 +604,12 @@ end
 # Definition of a repeat node
 class Repeat_loop_node < Instruction_node
 
-    attr_accessor :expr, :instrlist
+    attr_accessor :expr, :instrlist, :rpTkn
 
-    def initialize(expr, instrlist)
+    def initialize(expr, instrlist, rpTkn)
         @expr = expr
         @instrlist = instrlist
+        @rpTkn = rpTkn
     end
 
     def print_ast(ind)
@@ -616,12 +627,13 @@ end
 # Definition of a conditional node
 class If_node < Instruction_node
 
-    attr_accessor :cond, :instrlist1, :instrlist2
+    attr_accessor :cond, :instrlist1, :instrlist2, :if
 
-    def initialize(cond, instrlist1, instrlist2)
+    def initialize(cond, instrlist1, instrlist2, ifs)
         @cond = cond
         @instrlist1 = instrlist1
         @instrlist2 = instrlist2
+        @if = ifs
     end
 
     def print_ast(ind)
