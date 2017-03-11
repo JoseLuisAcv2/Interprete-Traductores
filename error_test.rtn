@@ -6,8 +6,11 @@ begin
 		with
 			boolean a = true;
 		do
+			if 3 > 3 then
+			end;
 		end;
 	end;
+	return 3;
 end;
 
 func h(number a, boolean hola)

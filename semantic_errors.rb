@@ -33,7 +33,7 @@ class SemanticError < RuntimeError
             "LINE " + @token.ret.line.to_s + ": Return value type does not match the function type. Expected '" + @extraInfo[0] + "' type but '" + @extraInfo[1] + "' type found."
 
         when "empty return instruction in non-void function"
-            "LINE " + @token.ret.line.to_s + ": Return value type does not match the function type. Expected '" + @extraInfo + "' type but void found."
+            "LINE " + @token.ret.line.to_s + ": Return value type does not match the function type. Expected '" + @extraInfo + "' type but 'void' found."
 
         when "return instruction in void function"
             "LINE " + @token.ret.line.to_s + ": Non void return statement in void type function."
