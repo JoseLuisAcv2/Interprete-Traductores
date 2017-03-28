@@ -633,7 +633,7 @@ class SemanticAnalyser
 
 	# Handle main program block
 	def programblk_handler(programblk, symbolTable)
-		
+
 		# Create new symbol table for program scope
 		newSymbolTable = createSymbolTable("program",symbolTable)
 

@@ -2,7 +2,7 @@
 #
 # 	Traductores e Interpretadores CI-3725
 # 	
-# 	Proyecto Fase 2 - Interpreter main file
+# 	Proyecto Fase 4 - Interpreter main file
 #
 # 	Autores:
 # 				- Jose Acevedo		13-10006
@@ -13,18 +13,24 @@
 require_relative 'retina_lexer'
 require_relative 'retina_parser'
 require_relative 'retina_semantic_analyser'
+require_relative 'retina_interpreter'
 
 def main
 
 	#Check file was given
 	if ARGV[0].nil? then
-		puts "Enter Retina file."
+		puts "RETINA PROGRAMMING LANGUAGE"
+		puts "SYNTAX: ./retina file [flag]"
+		puts "FLAGS:"
+		puts "\t-t: Print token list"
+		puts "\t-a: Print abstract syntax tree"
+		puts "\t-s: Print symbol table"
 		return
 	end
 
 	# Check file exists
 	if not File.file?(ARGV[0]) then
-		puts "File does not exist."
+		puts "File '" + ARGV[0] + "' does not exist."
 		return
 	end
 
@@ -34,6 +40,9 @@ def main
 		puts "Invalid file extension."
 		return
 	end
+
+	# Check flags
+	file, *flags = ARGV
 
 	# Creates lexer and obtains tokens found in rtn file
 	lexer = Lexer.new ARGV[0]
@@ -45,11 +54,22 @@ def main
 		return
 	end
 
+	# Print tokens
+	if flags.include? "-t" then
+		lexer.print_tokens()
+		return
+	end
+
 	# Creates parser for the given file in case parse has parsed
 	# successfully or prints unexpected token otherwise
 	begin
 		parser = Parser.new lexer
 		ast = parser.parse
+		# Print AST
+		if flags.include? "-a" then
+			ast.print_ast()
+			return
+		end
 	rescue SyntacticError => e
 		puts e
 		return
@@ -60,8 +80,21 @@ def main
 	begin
 		semanticAnalyser = SemanticAnalyser.new ast
 		symbolTable = semanticAnalyser.analyze
-		symbolTable.print_tables()
+		# Print symbol tables
+		if flags.include? "-s" then
+			symbolTable.print_tables()
+			return
+		end
 	rescue SemanticError => e
+		puts e
+		return
+	end
+
+	# Interpret AST of the program
+	begin
+		interpreter = Interpreter.new ast
+		interpreter.interpret
+	rescue RunTimeError => e
 		puts e
 		return
 	end

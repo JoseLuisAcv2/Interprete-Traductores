@@ -398,6 +398,7 @@ class Lexer
 
 	# Prints all tokens found in the input file
 	def print_tokens
+		puts "TOKEN LIST"
 		@tokens.each do |token|
 			puts "Line #{token.line}, column #{token.column}: #{token.symbol} '#{token.value}'";
 		end;		

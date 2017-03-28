@@ -35,6 +35,8 @@ class S_node < AST_node
     end
 
     def print_ast
+        puts "ABSTRACT SYNTAX TREE"
+        puts ""
         if not @defblk.nil? then
             puts "FUNCTION DEFINITION BLOCK:"
             puts
