@@ -17,9 +17,19 @@ class Interpreter
 
 	# Interpret AST
 	def interpret()
-		puts "testing interpreting... GOOD"
-		raise RunTimeError.new
+		scope_interpreter(@ast)
 	end
+	
+	# Start interpreting AST	
+	def scope_interpreter(scope)
+		# Interpret main program block
+		programblk_interpreter(scope.programblk)
+	end
+	
+	def programblk_interpreter(programblk)
+		puts "main block"
+	end
+
 end
 
 # Handle Retina runtime errors
