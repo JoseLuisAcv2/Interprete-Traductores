@@ -83,9 +83,9 @@ class Interpreter
 		when For_loop_const_node
 			for_loop_const_interpreter(instr)
 		
-		#when Repeat_loop_node
-		#	repeat_loop_interpreter(instr, symbolTable)
-		#
+		when Repeat_loop_node
+			repeat_loop_interpreter(instr, symbolTable)
+		
 		#when If_node
 		#	if_interpreter(instr, symbolTable)
 		#
@@ -350,7 +350,6 @@ class Interpreter
 		counterValue = lower_bound
 
 		while((lower_bound <= counterValue) and (counterValue <= upper_bound)) do
-			puts counterValue
 			
 			# Interpret instructions in for loop block
 			instrlist_interpreter(forblk.instrlist, symbolTable)
@@ -388,7 +387,6 @@ class Interpreter
 		counterValue = lower_bound
 
 		while((lower_bound <= counterValue) and (counterValue <= upper_bound)) do
-			puts counterValue
 			
 			# Interpret instructions in for loop block
 			instrlist_interpreter(constforblk.instrlist, symbolTable)
@@ -405,6 +403,27 @@ class Interpreter
 			# Increment counter value by 1
 			counterValue = counterValue + 1
 			symbolTable.set_value(counter, counterValue)
+		end
+	end
+
+	def repeat_loop_interpreter(repeat, symbolTable)
+
+		# Repeat instruction counter
+		i = 1
+
+		# Get initial value of repeat expression
+		exprValue = expr_interpreter(repeat.expr, symbolTable)
+
+		while((1 <= i) and (i <= exprValue)) do
+
+			# Interpret instructions in repeat block
+			instrlist_interpreter(repeat.instrlist, symbolTable)
+
+			# Get updated value of repeat expression after instructions are interpreted
+			exprValue = expr_interpreter(repeat.expr, symbolTable)
+
+			# Increment counter by 1
+			i = i + 1			
 		end
 	end
 end
