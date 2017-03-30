@@ -48,18 +48,6 @@ class SymbolTable
 		end
 	end
 
-	def update(key, value)
-		if !(has_key(key))
-			if (@predecessor != nil)
-				return father.lookup(key)
-			else
-				return nil
-			end
-		else
-			return @table[key]
-		end
-	end
-
 	def has_key(key)
 		return @table.has_key?(key)
 	end
@@ -77,11 +65,19 @@ class SymbolTable
 	end
 
 	def get_value(key)
-		return @value[key]
+		if(has_key(key))
+			return @value[key]
+		else
+			return @predecessor.get_value(key)
+		end
 	end
 
 	def set_value(key, value)
-		@value[key] = value
+		if(has_key(key))
+			@value[key] = value
+		else
+			@predecessor.set_value(key, value)
+		end
 	end
 
 	def print_tables()

@@ -77,9 +77,9 @@ class Interpreter
 		when While_loop_node
 			while_loop_interpreter(instr, symbolTable)
 		
-		#when For_loop_node
-		#	for_loop_interpreter(instr, symbolTable)
-		#
+		when For_loop_node
+			for_loop_interpreter(instr)
+		
 		#when For_loop_const_node
 		#	for_loop_const_interpreter(instr, symbolTable)
 		#
@@ -322,15 +322,48 @@ class Interpreter
 
 		# While condition evaluates to true execute instruction block
 		while(condValue) do
-
-			puts "in"
+		
 			# Interpret instructions inside while block
 			instrlist_interpreter(whileblk.instrlist, symbolTable)
 		
 			# Evaluate conditional expression
 			condValue = expr_interpreter(whileblk.expr, symbolTable)
+		
 		end
+	end
 
-		puts "out"
+	def for_loop_interpreter(forblk)
+
+		# For block symbol table
+		symbolTable = forblk.symbolTable
+
+		# Get initial values
+		counter = forblk.counter.name.value
+		lower_bound = expr_interpreter(forblk.lower_bound,symbolTable)
+		upper_bound = expr_interpreter(forblk.upper_bound,symbolTable)
+		increment = expr_interpreter(forblk.increment,symbolTable)
+
+		# Assign lower bound to for loop counter
+		symbolTable.set_value(counter, lower_bound)
+
+		# Set initial counter value for comparison with upper bound
+		counterValue = lower_bound
+
+		while((lower_bound <= counterValue) and (counterValue <= upper_bound)) do
+			puts counterValue
+			
+			# Interpret instructions in for loop block
+			instrlist_interpreter(forblk.instrlist, symbolTable)
+
+			# Get updated values after instructions are interpreted
+			counterValue = symbolTable.get_value(counter)
+			lower_bound = expr_interpreter(forblk.lower_bound,symbolTable)
+			upper_bound = expr_interpreter(forblk.upper_bound,symbolTable)
+			increment = expr_interpreter(forblk.increment,symbolTable)
+			
+			# Increment counter value
+			counterValue = counterValue + increment
+			symbolTable.set_value(counter, counterValue)
+		end
 	end
 end
