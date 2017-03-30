@@ -223,7 +223,7 @@ class SemanticAnalyser
 			# Get return expression type
 			exprType = expr_handler(instr.expr, symbolTable)
 	
-			# Return type doesnt match function type
+			# Return type does not match function type
 			if(not funcType.eql? exprType) then
 				types = [funcType, exprType]
 				raise SemanticError.new instr, "return type doesnt match function type", types
