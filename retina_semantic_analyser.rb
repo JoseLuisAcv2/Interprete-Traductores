@@ -506,7 +506,7 @@ class SemanticAnalyser
 
 		# Variable not declared (bad)
 		if(symbolTable.lookup(ident).nil?) then
-			raise SemanticError.new read, "variable not declared"
+			raise SemanticError.new read.ident, "variable not declared"
 		end
 
 	end

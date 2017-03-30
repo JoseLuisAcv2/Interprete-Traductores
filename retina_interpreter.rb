@@ -89,9 +89,9 @@ class Interpreter
 		when If_node
 			if_interpreter(instr, symbolTable)
 		
-		#when Read_node
-		#	read_interpreter(instr, symbolTable)
-		#
+		when Read_node
+			read_interpreter(instr, symbolTable)
+		
 		#when Write_node
 		#	write_interpreter(instr, symbolTable)
 		end
@@ -439,5 +439,50 @@ class Interpreter
 			# Execute else block of instructions if there is else
 			instrlist_interpreter(ifblk.instrlist2, symbolTable) unless ifblk.instrlist2.nil?			
 		end
+	end
+
+	def read_interpreter(read, symbolTable)
+
+		# Variable identifier
+		identifier = read.ident.name.value
+
+		# Variable type
+		type = symbolTable.lookup(identifier)
+
+		# Read from standard input
+		input = $stdin.gets
+		# Remove newline character
+		input = input.chomp
+		# Remove beginning whitespaces
+		input = input.lstrip
+		# Remove trailing whitespaces
+		input = input.rstrip
+
+		# Parse input
+		if(input.eql? "true") then
+			value = true
+		elsif(input.eql? "false") then
+			value = false
+		elsif(input =~ /\A([1-9][0-9]*|0)(\.[0-9]+)?\z/) then
+			value = input.to_f
+		else
+			raise RunTimeError.new read, "invalid input", input
+		end
+
+		# Check types match
+		if(type.eql? "boolean") then
+			# Input value is not of boolean type
+			if((not value.eql? true) and (not value.eql? false)) then
+				raise RunTimeError.new read, "input boolean type expected", value
+			end
+		elsif(type.eql? "number") then
+			# Input value is not of number type
+			if(not value.is_a? Numeric) then
+				raise RunTimeError.new read, "input number type expected", value
+			end
+		end
+
+		# Store input value for variable
+		symbolTable.set_value(identifier,value)
 	end
 end
