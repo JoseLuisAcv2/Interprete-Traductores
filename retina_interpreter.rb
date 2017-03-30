@@ -74,9 +74,9 @@ class Interpreter
 		when Withblk_node
 			withblk_interpreter(instr)
 		
-		#when While_loop_node
-		#	while_loop_interpreter(instr, symbolTable)
-		#
+		when While_loop_node
+			while_loop_interpreter(instr, symbolTable)
+		
 		#when For_loop_node
 		#	for_loop_interpreter(instr, symbolTable)
 		#
@@ -285,8 +285,6 @@ class Interpreter
 
 		# Store new value for variable in symbol table
 		symbolTable.set_value(identifier, exprValue)
-
-		puts symbolTable.get_value(identifier)
 	end
 
 	def withblk_interpreter(withblk)
@@ -315,5 +313,24 @@ class Interpreter
 			# Interpret assignment to variable
 			assignop_interpreter(decl.assign, symbolTable)
 		end
+	end
+
+	def while_loop_interpreter(whileblk, symbolTable)
+
+		# Get value of boolean condition
+		condValue = expr_interpreter(whileblk.expr, symbolTable)
+
+		# While condition evaluates to true execute instruction block
+		while(condValue) do
+
+			puts "in"
+			# Interpret instructions inside while block
+			instrlist_interpreter(whileblk.instrlist, symbolTable)
+		
+			# Evaluate conditional expression
+			condValue = expr_interpreter(whileblk.expr, symbolTable)
+		end
+
+		puts "out"
 	end
 end
