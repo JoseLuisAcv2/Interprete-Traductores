@@ -10,6 +10,8 @@
 
 require_relative 'runtime_errors'
 
+$returnValue
+
 # Retina interpreter
 class Interpreter
 
@@ -65,9 +67,9 @@ class Interpreter
 		when Comp_expr_node
 			comp_expr_interpreter(instr, symbolTable)
 		
-		#when Callfunc_node
-		#	callfunc_interpreter(instr, symbolTable)
-		#
+		when Callfunc_node
+			callfunc_interpreter(instr, symbolTable)
+		
 		when Assignop_node
 			assignop_interpreter(instr, symbolTable)
 		
@@ -101,10 +103,10 @@ class Interpreter
 	def return_interpreter(instr, symbolTable)
 		# void return instruction
 		if(instr.expr.nil?) then
-			return nil
+			$returnValue = nil
 		# return instruction with expression
 		else
-			return expr_interpreter(instr.expr, symbolTable)
+			$returnValue = expr_interpreter(instr.expr, symbolTable)
 		end
 	end
 
@@ -134,8 +136,8 @@ class Interpreter
 		when Comp_expr_node
 			return comp_expr_interpreter(expr, symbolTable)
 		
-		#when Callfunc_node
-		#	return callfunc_interpreter(expr, symbolTable)
+		when Callfunc_node
+			return callfunc_interpreter(expr, symbolTable)
 		end
 	end
 
@@ -276,6 +278,41 @@ class Interpreter
 		end
 	end
 
+	def callfunc_interpreter(funcCall, symbolTable)
+		# Get function definition
+		funcDef = funcCall.funcdef
+
+		# Get function symbol table
+		funcSymbolTable = funcDef.symbolTable
+
+		# Copy arguments to function parameters in symbol table
+		arglist_interpreter(funcCall.arglist, funcDef.paramlist, symbolTable, funcSymbolTable)
+	
+		# Interpret instruction block of function
+		instrlist_interpreter(funcDef.instrlist, funcSymbolTable)
+
+		# Return function
+		return $returnValue
+	end
+
+	def arglist_interpreter(arglist, paramlist, symbolTable, funcSymbolTable)
+		# Argument list is not empty. Keep processing arguments
+		if(not arglist.nil?) then
+			
+			# Argument value
+			argValue = expr_interpreter(arglist.arg, symbolTable)
+
+			# Parameter name
+			paramName = paramlist.param.ident.name.value
+
+			# Store value of argument for parameter in symbol table of function
+			funcSymbolTable.set_value(paramName, argValue)
+
+			# Process following arguments
+			arglist_interpreter(arglist.arglist, paramlist.paramlist, symbolTable, funcSymbolTable)
+		end
+	end
+
 	def assignop_interpreter(assignop, symbolTable)
 		# Get identifier of variable
 		identifier = assignop.ident.name.value
@@ -312,7 +349,27 @@ class Interpreter
 		if(not decl.assign.nil?) then
 			# Interpret assignment to variable
 			assignop_interpreter(decl.assign, symbolTable)
+		# Initialize list of variables with default value
+		else
+			type = decl.type.type.value
+			if(type.eql? "number") then
+				defaultValue = 0
+			elsif(type.eql? "boolean") then
+				defaultValue = false
+			end
+			identlist_interpreter(decl.identlist, defaultValue, symbolTable)
 		end
+	end
+
+	def identlist_interpreter(identlist, defaultValue, symbolTable)
+		# Variable identifier
+		ident = identlist.nxt_ident.name.value
+
+		# Set variable to default value according to data type
+		symbolTable.set_value(ident, defaultValue)
+
+		# Handle following identifiers
+		identlist_interpreter(identlist.ident, defaultValue, symbolTable) unless identlist.ident.nil?
 	end
 
 	def while_loop_interpreter(whileblk, symbolTable)
@@ -492,7 +549,7 @@ class Interpreter
 		writelist_interpreter(write.writelist, symbolTable, write.newline) unless write.writelist.nil?
 
 		# Interpret and print last write item
-		writeitem_interpreter(write.lastitem, symbolTable, true)
+		writeitem_interpreter(write.lastitem, symbolTable, write.newline, true)
 	end
 
 	def writelist_interpreter(writelist, symbolTable, newline)
@@ -503,7 +560,7 @@ class Interpreter
 		writeitem_interpreter(writelist.cur_write, symbolTable, newline) unless writelist.cur_write.nil?
 	end
 
-	def writeitem_interpreter(item, symbolTable, newline)
+	def writeitem_interpreter(item, symbolTable, newline, last=false)
 		
 		# If item is not a string, then evaluate the expression
 		if(not item.instance_of? String_node) then
@@ -536,9 +593,11 @@ class Interpreter
 			# Print newline after the item
 			$stdout.puts output
 		else
-			# Print space character for following items
 			print output
-			print " "
+			# Print space character for following items if not last
+			if(not last) then
+				print " "
+			end
 			$stdout.flush
 		end
 	end

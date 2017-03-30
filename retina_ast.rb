@@ -373,7 +373,7 @@ end
 # Definition of a function call node
 class Callfunc_node < Expression_node
 
-    attr_accessor :ident, :arglist
+    attr_accessor :ident, :arglist, :funcdef
 
     def initialize(ident, arglist)
         @ident = ident

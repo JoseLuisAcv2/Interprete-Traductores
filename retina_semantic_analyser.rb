@@ -89,7 +89,7 @@ class SemanticAnalyser
 			params = paramlist_handler(funcdef, funcdef.paramlist, newSymbolTable, params) unless funcdef.paramlist.nil?
 
 			# Insert function name with return type and parameters in functions table
-			$funcTable.insert(ident,type,params)
+			$funcTable.insert(ident,type,params,funcdef)
 
 		# Function identifier not unique
 		else
@@ -369,6 +369,9 @@ class SemanticAnalyser
 			end
 			arglist_handler(instr.arglist, params, params.length, instr, symbolTable)
 		
+			# Get pointer to function body
+			instr.funcdef = $funcTable.get_funcDef(ident)
+
 			# Return function return type
 			return $funcTable.lookup(ident)
 
@@ -381,14 +384,12 @@ class SemanticAnalyser
 	def arglist_handler(args, params, expectedArgs, instr, symbolTable)
 		
 		if(args.nil?) then
-			
 			# Empty argument list and not empty parameter list
 			if(params.any?) then
 				raise SemanticError.new instr, "function call not enough arguments", expectedArgs
 			end
 		
-		else
-			
+		else			
 			# Not empty argument list and empty parameter list
 			if(not params.any?) then
 				raise SemanticError.new instr, "function call too many arguments", expectedArgs

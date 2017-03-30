@@ -136,15 +136,21 @@ class FuncSymbolTable < SymbolTable
 	def initialize(name = nil)
 		super(nil,name)
 		@funcParam = Hash.new
+		@funcDefNode = Hash.new
 	end
 
 	def get_funcParams(func)
 		return @funcParam[func]
 	end
 
-	def insert(func,type,params)
+	def get_funcDef(func)
+		return @funcDefNode[func]
+	end
+
+	def insert(func,type,params,funcDef=nil)
 		super(func,type)
-		@funcParam[func] = params		
+		@funcParam[func] = params
+		@funcDefNode[func] = funcDef
 	end
 
 end
