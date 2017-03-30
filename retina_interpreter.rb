@@ -86,9 +86,9 @@ class Interpreter
 		when Repeat_loop_node
 			repeat_loop_interpreter(instr, symbolTable)
 		
-		#when If_node
-		#	if_interpreter(instr, symbolTable)
-		#
+		when If_node
+			if_interpreter(instr, symbolTable)
+		
 		#when Read_node
 		#	read_interpreter(instr, symbolTable)
 		#
@@ -424,6 +424,20 @@ class Interpreter
 
 			# Increment counter by 1
 			i = i + 1			
+		end
+	end
+
+	def if_interpreter(ifblk, symbolTable)
+
+		# Get value of boolean condition
+		condValue = expr_interpreter(ifblk.cond, symbolTable)
+
+		if(condValue) then
+			# Execute if block of instructions
+			instrlist_interpreter(ifblk.instrlist1, symbolTable)
+		else
+			# Execute else block of instructions if there is else
+			instrlist_interpreter(ifblk.instrlist2, symbolTable) unless ifblk.instrlist2.nil?			
 		end
 	end
 end
