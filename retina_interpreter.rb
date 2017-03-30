@@ -8,6 +8,8 @@
 #               - Edwar Yepez       12-10855
 #
 
+require_relative 'runtime_errors'
+
 # Retina interpreter
 class Interpreter
 
@@ -60,18 +62,18 @@ class Interpreter
 		when Arith_un_expr_node
 			arith_un_expr_interpreter(instr, symbolTable)
 		
-		#when Comp_expr_node
-		#	comp_expr_interpreter(instr, symbolTable)
-		#
+		when Comp_expr_node
+			comp_expr_interpreter(instr, symbolTable)
+		
 		#when Callfunc_node
 		#	callfunc_interpreter(instr, symbolTable)
 		#
-		#when Assignop_node
-		#	assignop_interpreter(instr, symbolTable)
-		#
-		#when Withblk_node
-		#	withblk_interpreter(instr, symbolTable)
-		#
+		when Assignop_node
+			assignop_interpreter(instr, symbolTable)
+		
+		when Withblk_node
+			withblk_interpreter(instr)
+		
 		#when While_loop_node
 		#	while_loop_interpreter(instr, symbolTable)
 		#
@@ -106,6 +108,37 @@ class Interpreter
 		end
 	end
 
+	def expr_interpreter(expr, symbolTable)
+		case expr
+		when Number_node
+			return number_interpreter(expr)
+		
+		when Boolean_node
+			return boolean_interpreter(expr)
+		
+		when Identifier_node
+			return identifier_interpreter(expr, symbolTable)
+		
+		when Logical_bin_expr_node
+			return logical_bin_expr_interpreter(expr, symbolTable)
+		
+		when Logical_un_expr_node
+			return logical_un_expr_interpreter(expr, symbolTable)
+		
+		when Arith_bin_expr_node
+			return arith_bin_expr_interpreter(expr, symbolTable)
+		
+		when Arith_un_expr_node
+			return arith_un_expr_interpreter(expr, symbolTable)
+		
+		when Comp_expr_node
+			return comp_expr_interpreter(expr, symbolTable)
+		
+		#when Callfunc_node
+		#	return callfunc_interpreter(expr, symbolTable)
+		end
+	end
+
 	def boolean_interpreter(boolean)
 		value =  boolean.value.value
 		if(value == "true") then
@@ -120,7 +153,6 @@ class Interpreter
 		return value
 	end
 
-	# Interpret identifier
 	def identifier_interpreter(identifier, symbolTable)
 		# Get identifier name
 		name = identifier.name.value
@@ -214,62 +246,74 @@ class Interpreter
 		end
 	end
 	
-	def expr_interpreter(expr, symbolTable)
-		case expr
-		when Number_node
-			return number_interpreter(expr)
+	def comp_expr_interpreter(instr, symbolTable)
+		# Value of left side of expression
+		leftValue = expr_interpreter(instr.left, symbolTable)
+		# Value of right side of expression
+		rightValue = expr_interpreter(instr.right, symbolTable)
 		
-		when Boolean_node
-			return boolean_interpreter(expr)
-		
-		when Identifier_node
-			return identifier_interpreter(expr, symbolTable)
-		
-		when Logical_bin_expr_node
-			return logical_bin_expr_interpreter(expr, symbolTable)
-		
-		when Logical_un_expr_node
-			return logical_un_expr_interpreter(expr, symbolTable)
-		
-		when Arith_bin_expr_node
-			return arith_bin_expr_interpreter(expr, symbolTable)
-		
-		when Arith_un_expr_node
-			return arith_un_expr_interpreter(expr, symbolTable)
-		
-		#when Comp_expr_node
-		#	return comp_expr_interpreter(expr, symbolTable)
-		#
-		#when Callfunc_node
-		#	return callfunc_interpreter(expr, symbolTable)
+		# Operator of expression
+		op = instr.op
+	
+		if(op.eql? "EQUALITY") then
+			return (leftValue == rightValue)
+
+		elsif(op.eql? "INEQUALITY") then
+			return (leftValue != rightValue)
+
+		elsif(op.eql? "GREATHER THAN") then
+			return (leftValue > rightValue)
+
+		elsif(op.eql? "GREATHER THAN OR EQUAL") then
+			return (leftValue >= rightValue)
+
+		elsif(op.eql? "LESS THAN") then
+			return (leftValue < rightValue)
+
+		elsif(op.eql? "LESS THAN OR EQUAL") then
+			return (leftValue <= rightValue)
+
 		end
 	end
 
-end
+	def assignop_interpreter(assignop, symbolTable)
+		# Get identifier of variable
+		identifier = assignop.ident.name.value
+		
+		# Get value of assigment expression
+		exprValue = expr_interpreter(assignop.expr, symbolTable)
 
-# Handle Retina runtime errors
-class RunTimeError < RuntimeError
+		# Store new value for variable in symbol table
+		symbolTable.set_value(identifier, exprValue)
 
-	def initialize(token, errorType)
-		@token = token
-		@errorType = errorType
+		puts symbolTable.get_value(identifier)
 	end
 
-	def to_s
-		puts "RUNTIME ERROR:"
-		case @errorType
-		when "division by zero in integer division"
-			"LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": Division by zero in integer division."
+	def withblk_interpreter(withblk)
+		# Get symbol table for with-do block scope
+		symbolTable = withblk.symbolTable
+
+		# Store initializations in variable declarations
+		declist_interpreter(withblk.declist, symbolTable)
+
+		# Interpret with-do instruction block
+		instrlist_interpreter(withblk.instrlist, symbolTable)
+	end
+
+	def declist_interpreter(declist, symbolTable)
+		# Interpret current declaration
+		decl_interpreter(declist.nxt_decl, symbolTable) unless declist.nxt_decl.nil?
 		
-		when "division by zero in exact division"
-			"LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": Division by zero in exact division."
-		
-		when "division by zero in integer modulo"
-			"LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": Division by zero in integer modulo."
-		
-		when "division by zero in exact modulo"
-			"LINE " + @token.op_token.line.to_s + ", COLUMN " + @token.op_token.column.to_s + ": Division by zero in exact modulo."
+		# Interpret following declarations
+		declist_interpreter(declist.decl, symbolTable) unless declist.decl.nil?
+
+	end
+
+	def decl_interpreter(decl, symbolTable)
+		# Single declaration with assignment
+		if(not decl.assign.nil?) then
+			# Interpret assignment to variable
+			assignop_interpreter(decl.assign, symbolTable)
 		end
 	end
-
 end

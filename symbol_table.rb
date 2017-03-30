@@ -80,6 +80,10 @@ class SymbolTable
 		return @value[key]
 	end
 
+	def set_value(key, value)
+		@value[key] = value
+	end
+
 	def print_tables()
 		puts "SYMBOL TABLES"
 		@children.each do |child|
