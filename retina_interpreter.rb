@@ -80,9 +80,9 @@ class Interpreter
 		when For_loop_node
 			for_loop_interpreter(instr)
 		
-		#when For_loop_const_node
-		#	for_loop_const_interpreter(instr, symbolTable)
-		#
+		when For_loop_const_node
+			for_loop_const_interpreter(instr)
+		
 		#when Repeat_loop_node
 		#	repeat_loop_interpreter(instr, symbolTable)
 		#
@@ -363,6 +363,47 @@ class Interpreter
 			
 			# Increment counter value
 			counterValue = counterValue + increment
+			symbolTable.set_value(counter, counterValue)
+		end
+	end
+
+	def for_loop_const_interpreter(constforblk)
+		
+		# Const for block symbol table
+		symbolTable = constforblk.symbolTable
+
+		# Get initial values
+		counter = constforblk.counter.name.value
+		lower_bound = expr_interpreter(constforblk.lower_bound,symbolTable)
+		upper_bound = expr_interpreter(constforblk.upper_bound,symbolTable)
+
+		# Floor function is applied to lower and upper bounds
+		lower_bound = lower_bound.floor
+		upper_bound = upper_bound.floor
+
+		# Assign lower bound to const for loop counter
+		symbolTable.set_value(counter, lower_bound)
+
+		# Set initial counter value for comparison with upper bound
+		counterValue = lower_bound
+
+		while((lower_bound <= counterValue) and (counterValue <= upper_bound)) do
+			puts counterValue
+			
+			# Interpret instructions in for loop block
+			instrlist_interpreter(constforblk.instrlist, symbolTable)
+
+			# Get updated values after instructions are interpreted
+			counterValue = symbolTable.get_value(counter)
+			lower_bound = expr_interpreter(constforblk.lower_bound,symbolTable)
+			upper_bound = expr_interpreter(constforblk.upper_bound,symbolTable)
+
+			# Appy floor function
+			lower_bound = lower_bound.floor
+			upper_bound = upper_bound.floor
+			
+			# Increment counter value by 1
+			counterValue = counterValue + 1
 			symbolTable.set_value(counter, counterValue)
 		end
 	end
