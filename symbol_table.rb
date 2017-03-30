@@ -18,14 +18,24 @@ class SymbolTable
 		@table = Hash.new
 		@predecessor = predecessor
 		@children = Array.new
+		@value = Hash.new
 	end
 
 	def insert(key, value)
 		@table.store(key, value)
+		# Default value
+		if value.eql? "void" then
+			@value.store(key,nil)
+		elsif value.eql? "number" then
+			@value.store(key,0)
+		elsif value.eql? "boolean" then
+			@value.store(key,false)
+		end
 	end
 
 	def delete(key)
 		@table.delete(key)
+		@value.delete(key)
 	end
 
 	def lookup(key)
@@ -64,6 +74,10 @@ class SymbolTable
 
 	def add_child(child_table)
 		@children << child_table
+	end
+
+	def get_value(key)
+		return @value[key]
 	end
 
 	def print_tables()
