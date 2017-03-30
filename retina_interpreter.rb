@@ -92,8 +92,8 @@ class Interpreter
 		when Read_node
 			read_interpreter(instr, symbolTable)
 		
-		#when Write_node
-		#	write_interpreter(instr, symbolTable)
+		when Write_node
+			write_interpreter(instr, symbolTable)
 		end
 	end
 
@@ -484,5 +484,62 @@ class Interpreter
 
 		# Store input value for variable
 		symbolTable.set_value(identifier,value)
+	end
+
+	def write_interpreter(write, symbolTable)
+		
+		# Interpret writelist of expressions
+		writelist_interpreter(write.writelist, symbolTable, write.newline) unless write.writelist.nil?
+
+		# Interpret and print last write item
+		writeitem_interpreter(write.lastitem, symbolTable, true)
+	end
+
+	def writelist_interpreter(writelist, symbolTable, newline)
+		# Interpret writelist of expressions
+		writelist_interpreter(writelist.nxt_write, symbolTable, newline) unless writelist.nxt_write.nil?
+
+		# Interpret and print current write item
+		writeitem_interpreter(writelist.cur_write, symbolTable, newline) unless writelist.cur_write.nil?
+	end
+
+	def writeitem_interpreter(item, symbolTable, newline)
+		
+		# If item is not a string, then evaluate the expression
+		if(not item.instance_of? String_node) then
+			output = expr_interpreter(item, symbolTable)
+		# Item is a string
+		else
+			# Remove quotation marks from the beginning and end of the token
+			output = item.value.value[1..-2]
+			# Remove escape characters
+			i = 0
+			while(i < output.length) do
+				if(output[i].eql? '\\') then
+					output[i]=''
+				end
+				i = i + 1
+			end
+			# Insert newline characters
+			i = 0
+			while(i < output.length-1) do
+				if(output[i].eql? '\\' and output[i+1].eql? 'n') then
+					output[i]="\n"
+					output[i+1]=''
+				end
+				i = i + 1
+			end
+		end
+
+		# Print item to standard output
+		if(newline) then
+			# Print newline after the item
+			$stdout.puts output
+		else
+			# Print space character for following items
+			print output
+			print " "
+			$stdout.flush
+		end
 	end
 end

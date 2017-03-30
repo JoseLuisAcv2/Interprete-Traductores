@@ -658,7 +658,7 @@ end
 # Definition of a write node
 class Write_node < Instruction_node
 
-    attr_accessor :writelist, :lastitem
+    attr_accessor :writelist, :lastitem, :newline
 
     def initialize(writelist, lastitem, newline = false)
         @writelist = writelist
