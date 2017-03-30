@@ -334,7 +334,7 @@ class SemanticAnalyser
 		operator = instr.op
 		
 		# If operator is == or /= then verify equality in operand types
-		if (operator.eql? "EQUALITY" or operator.eql? "INEQUALITY") then
+		if ((operator.eql? "EQUALITY") or (operator.eql? "INEQUALITY")) then
 			if(leftType.eql? rightType) then
 				return "boolean"
 			else
