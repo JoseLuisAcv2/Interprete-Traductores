@@ -14,11 +14,11 @@
 class Image
 
 	def initialize(height=1001, width=1001, cursor_x=0, cursor_y=0, degree=90, opened_eye=true)
-		@height = height.to_i
-		@width = width.to_i
+		@height = height.round
+		@width = width.round
 		@image = Array.new(@height) { Array.new(@width) { 0 } }
-		@cursor_x = cursor_x.to_i
-		@cursor_y = cursor_y.to_i
+		@cursor_x = cursor_x.round
+		@cursor_y = cursor_y.round
 		@degree = degree
 		@opened_eye = opened_eye
 
@@ -93,8 +93,9 @@ class Image
 	def forward(steps)
 		# Calculate ending coordinates
 		rad = @degree * Math::PI / 180
-		new_x = (@cursor_x + steps*Math.cos(rad)).to_i
-		new_y = (@cursor_y + steps*Math.sin(rad)).to_i
+
+		new_x = (@cursor_x + steps*Math.cos(rad)).round
+		new_y = (@cursor_y + steps*Math.sin(rad)).round
 	
 		if(@opened_eye) then
 			draw_points(@cursor_x, @cursor_y, new_x, new_y)
@@ -109,8 +110,8 @@ class Image
 	def backward(steps)
 		# Calculate ending coordinates
 		rad = @degree * Math::PI / 180
-		new_x = (@cursor_x - steps*Math.cos(rad)).to_i
-		new_y = (@cursor_y - steps*Math.sin(rad)).to_i
+		new_x = (@cursor_x - steps*Math.cos(rad)).round
+		new_y = (@cursor_y - steps*Math.sin(rad)).round
 
 		if(@opened_eye) then
 			draw_points(@cursor_x, @cursor_y, new_x, new_y)
@@ -133,8 +134,8 @@ class Image
 	
 	# Set cursor coordinates
 	def setposition(x,y)
-		@cursor_x = x.to_i
-		@cursor_y = y.to_i
+		@cursor_x = x.round
+		@cursor_y = y.round
 	end
 	
 	def arc(degree,radius)
@@ -236,12 +237,12 @@ class Image
 	# Auxiliary function to convert x coordinate from
 	# cartesian system to matrix column
 	def convert_x_to_column(x)
-		return (((@width-1)/2) + x).to_i
+		return (((@width-1)/2) + x).round
 	end
 
 	# Auxiliary function to convert y coordinate from
 	# cartesian system to matrix row
 	def convert_y_to_row(y)
-		return (((@width-1)/2) - y).to_i
+		return (((@width-1)/2) - y).round
 	end
 end
