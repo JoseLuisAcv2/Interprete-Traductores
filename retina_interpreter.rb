@@ -32,15 +32,23 @@ class Interpreter
 	
 	# Interpret main program block
 	def programblk_interpreter(programblk)
-		instrlist_interpreter(programblk.instrlist, programblk.symbolTable)
+		# Create main symbol table
+		symbolTable = createSymbolTable()
+		# Interpret instruction block
+		instrlist_interpreter(programblk.instrlist, symbolTable)
 	end
 
 	# Interpret list of instructions
 	def instrlist_interpreter(instrlist, symbolTable)
 		# Interpret next instruction if exists
-		instrlist_interpreter(instrlist.nxt_instr, symbolTable) unless instrlist.nxt_instr.nil?
+		ret = instrlist_interpreter(instrlist.nxt_instr, symbolTable) unless instrlist.nxt_instr.nil?
+		# Return instruction found. Skip other instructions
+		if(ret == "return") then
+			return ret
+		end;
 		# Interpret current instruction if exists
-		instr_interpreter(instrlist.instr, symbolTable) unless instrlist.instr.nil?
+		return instr_interpreter(instrlist.instr, symbolTable) unless instrlist.instr.nil?
+		
 	end
 
 	# Interpret single instruction
@@ -51,6 +59,7 @@ class Interpreter
 		
 		when Return_node
 			return_interpreter(instr, symbolTable)
+			return "return"
 		
 		when Logical_bin_expr_node
 			logical_bin_expr_interpreter(instr, symbolTable)
@@ -74,16 +83,16 @@ class Interpreter
 			assignop_interpreter(instr, symbolTable)
 		
 		when Withblk_node
-			withblk_interpreter(instr)
+			withblk_interpreter(instr, symbolTable)
 		
 		when While_loop_node
 			while_loop_interpreter(instr, symbolTable)
 		
 		when For_loop_node
-			for_loop_interpreter(instr)
+			for_loop_interpreter(instr, symbolTable)
 		
 		when For_loop_const_node
-			for_loop_const_interpreter(instr)
+			for_loop_const_interpreter(instr, symbolTable)
 		
 		when Repeat_loop_node
 			repeat_loop_interpreter(instr, symbolTable)
@@ -283,7 +292,7 @@ class Interpreter
 		funcDef = funcCall.funcdef
 
 		# Get function symbol table
-		funcSymbolTable = funcDef.symbolTable
+		funcSymbolTable = createSymbolTable()
 
 		# Copy arguments to function parameters in symbol table
 		arglist_interpreter(funcCall.arglist, funcDef.paramlist, symbolTable, funcSymbolTable)
@@ -304,8 +313,12 @@ class Interpreter
 
 			# Parameter name
 			paramName = paramlist.param.ident.name.value
+			# Parameter type
+			paramType = paramlist.param.type.type.value
 
-			# Store value of argument for parameter in symbol table of function
+			# Store parameter in function table
+			funcSymbolTable.insert(paramName, paramType)
+			# Store value of argument for corresponding parameter
 			funcSymbolTable.set_value(paramName, argValue)
 
 			# Process following arguments
@@ -324,15 +337,15 @@ class Interpreter
 		symbolTable.set_value(identifier, exprValue)
 	end
 
-	def withblk_interpreter(withblk)
-		# Get symbol table for with-do block scope
-		symbolTable = withblk.symbolTable
+	def withblk_interpreter(withblk, symbolTable)
+		# Create symbol table for with-do block scope
+		newSymbolTable = createSymbolTable(symbolTable)
 
-		# Store initializations in variable declarations
-		declist_interpreter(withblk.declist, symbolTable)
+		# Store variable declarations and initializations
+		declist_interpreter(withblk.declist, newSymbolTable)
 
 		# Interpret with-do instruction block
-		instrlist_interpreter(withblk.instrlist, symbolTable)
+		instrlist_interpreter(withblk.instrlist, newSymbolTable)
 	end
 
 	def declist_interpreter(declist, symbolTable)
@@ -345,10 +358,21 @@ class Interpreter
 	end
 
 	def decl_interpreter(decl, symbolTable)
+
+		# Declaration type
+		type = decl.type.type.value
+
 		# Single declaration with assignment
 		if(not decl.assign.nil?) then
+			# Variable identifier
+			ident = decl.assign.ident.name.value
+			
+			# Insert variable in symbol table
+			symbolTable.insert(ident, type)			
+			
 			# Interpret assignment to variable
 			assignop_interpreter(decl.assign, symbolTable)
+	
 		# Initialize list of variables with default value
 		else
 			type = decl.type.type.value
@@ -357,19 +381,22 @@ class Interpreter
 			elsif(type.eql? "boolean") then
 				defaultValue = false
 			end
-			identlist_interpreter(decl.identlist, defaultValue, symbolTable)
+			identlist_interpreter(decl.identlist, type, defaultValue, symbolTable)
 		end
 	end
 
-	def identlist_interpreter(identlist, defaultValue, symbolTable)
+	def identlist_interpreter(identlist, type, defaultValue, symbolTable)
 		# Variable identifier
 		ident = identlist.nxt_ident.name.value
+
+		# Insert variable in symbol table
+		symbolTable.insert(ident, type)	
 
 		# Set variable to default value according to data type
 		symbolTable.set_value(ident, defaultValue)
 
 		# Handle following identifiers
-		identlist_interpreter(identlist.ident, defaultValue, symbolTable) unless identlist.ident.nil?
+		identlist_interpreter(identlist.ident, type, defaultValue, symbolTable) unless identlist.ident.nil?
 	end
 
 	def while_loop_interpreter(whileblk, symbolTable)
@@ -389,13 +416,15 @@ class Interpreter
 		end
 	end
 
-	def for_loop_interpreter(forblk)
+	def for_loop_interpreter(forblk, predSymbolTable)
 
 		# For block symbol table
-		symbolTable = forblk.symbolTable
+		symbolTable = createSymbolTable(predSymbolTable)
 
-		# Get initial values
 		counter = forblk.counter.name.value
+		symbolTable.insert(counter, "number")
+		
+		# Get initial values
 		lower_bound = expr_interpreter(forblk.lower_bound,symbolTable)
 		upper_bound = expr_interpreter(forblk.upper_bound,symbolTable)
 		increment = expr_interpreter(forblk.increment,symbolTable)
@@ -423,13 +452,15 @@ class Interpreter
 		end
 	end
 
-	def for_loop_const_interpreter(constforblk)
+	def for_loop_const_interpreter(constforblk, predSymbolTable)
 		
 		# Const for block symbol table
-		symbolTable = constforblk.symbolTable
+		symbolTable = createSymbolTable(predSymbolTable)
+
+		counter = constforblk.counter.name.value
+		symbolTable.insert(counter, "number")
 
 		# Get initial values
-		counter = constforblk.counter.name.value
 		lower_bound = expr_interpreter(constforblk.lower_bound,symbolTable)
 		upper_bound = expr_interpreter(constforblk.upper_bound,symbolTable)
 
@@ -600,5 +631,11 @@ class Interpreter
 			end
 			$stdout.flush
 		end
+	end
+
+	def createSymbolTable(predecessor=nil)
+		newSymbolTable = SymbolTable.new
+		newSymbolTable.set_predecessor(predecessor)
+		return newSymbolTable
 	end
 end

@@ -12,7 +12,7 @@ class SymbolTable
 
 	attr_accessor :id, :name, :children
 
-	def initialize(id = nil, name = nil, predecessor = nil)
+	def initialize(id = nil, name = "", predecessor = nil)
 		@id = id
 		@name = name.upcase
 		@table = Hash.new

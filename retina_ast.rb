@@ -49,7 +49,7 @@ end
 # Definition of a program block node
 class Programblk_node < AST_node
 
-    attr_accessor :instrlist, :symbolTable
+    attr_accessor :instrlist
 
     def initialize(instrlist)
         @instrlist = instrlist
@@ -82,7 +82,7 @@ end
 # Definition of a function declaration node
 class Funcdef_node < Instruction_node
 
-    attr_accessor :func, :ident, :paramlist, :type, :instrlist, :symbolTable
+    attr_accessor :func, :ident, :paramlist, :type, :instrlist
 
     def initialize(func, ident, paramlist, type, instrlist)
         @func = func
@@ -437,7 +437,7 @@ end
 # Definition of a with-do block node
 class Withblk_node < Instruction_node
 
-    attr_accessor :declist, :instrlist, :symbolTable
+    attr_accessor :declist, :instrlist
 
     def initialize(declist, instrlist)
         @declist = declist
@@ -540,7 +540,7 @@ end
 # Definition of a for node
 class For_loop_node < Instruction_node
 
-    attr_accessor :counter, :lower_bound, :upper_bound, :increment, :instrlist, :forTkn, :symbolTable
+    attr_accessor :counter, :lower_bound, :upper_bound, :increment, :instrlist, :forTkn
 
     def initialize(counter, lower_bound, upper_bound, increment, instrlist, forTkn)
         @counter = counter
@@ -575,7 +575,7 @@ end
 # Definition of a for with increment node
 class For_loop_const_node < Instruction_node
 
-    attr_accessor :counter, :lower_bound, :upper_bound, :instrlist, :forTkn, :symbolTable
+    attr_accessor :counter, :lower_bound, :upper_bound, :instrlist, :forTkn
 
     def initialize(counter, lower_bound, upper_bound, instrlist, forTkn)
         @counter = counter

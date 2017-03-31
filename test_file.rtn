@@ -151,7 +151,7 @@ begin
 end;
 
 program
-    writeln "Insert a number : ";
+    write "Insert a number : ";
     with
         number n;
     do

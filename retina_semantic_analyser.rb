@@ -82,7 +82,6 @@ class SemanticAnalyser
 
 			# Create new symbol table for function scope
 			newSymbolTable = createSymbolTable(ident,symbolTable)
-			funcdef.symbolTable = newSymbolTable
 
 			# Store parameters in symbol table
 			params = Array.new
@@ -430,7 +429,6 @@ class SemanticAnalyser
 
 		# Create new symbol table for with-block scope
 		newSymbolTable = createSymbolTable("with-block",predSymbolTable)
-		withblk.symbolTable = newSymbolTable
 
 		# Store newly declared variables in new symbol table
 		declist_handler(withblk.declist, newSymbolTable)
@@ -568,7 +566,6 @@ class SemanticAnalyser
 
 		# Create new symbol table for for-block scope
 		newSymbolTable = createSymbolTable("for-loop",predSymbolTable)
-		forblk.symbolTable = newSymbolTable
 
 		# Store for variable in new symbol table
 		newSymbolTable.insert(forblk.counter.name.value, "number")	
@@ -601,7 +598,6 @@ class SemanticAnalyser
 
 		# Create new symbol table for const-for-block scope
 		newSymbolTable = createSymbolTable("const-for-loop",predSymbolTable)
-		constforblk.symbolTable = newSymbolTable
 
 		# Store const-for variable in new symbol table
 		newSymbolTable.insert(constforblk.counter.name.value, "number")	
@@ -641,7 +637,6 @@ class SemanticAnalyser
 
 		# Create new symbol table for program scope
 		newSymbolTable = createSymbolTable("program",symbolTable)
-		programblk.symbolTable = newSymbolTable
 
 		# Handle block of instructions
 		instrlist_handler(programblk.instrlist, newSymbolTable)
