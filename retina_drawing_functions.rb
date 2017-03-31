@@ -47,34 +47,34 @@ class Image
 			return true
 		
 		when "forward"
-			steps = funcCall.arglist.arg.value.value
+			steps = funcCall.arglist.arg.value.value.to_f
 			forward(steps)
 			return true
 		
 		when "backward"
-			steps = funcCall.arglist.arg.value.value
+			steps = funcCall.arglist.arg.value.value.to_f
 			backward(steps)
 			return true
 		
 		when "rotater"
-			degree = funcCall.arglist.arg.value.value
+			degree = funcCall.arglist.arg.value.value.to_f
 			rotater(degree)
 			return true
 		
 		when "rotatel"
-			degree = funcCall.arglist.arg.value.value
+			degree = funcCall.arglist.arg.value.value.to_f
 			rotatel(degree)
 			return true
 		
 		when "setposition"
-			x = funcCall.arglist.arg.value.value
-			y = funcCall.arglist.arglist.arg.value.value
+			x = funcCall.arglist.arg.value.value.to_f
+			y = funcCall.arglist.arglist.arg.value.value.to_f
 			setposition(x,y)
 			return true
 		
 		when "arc"
-			degree = funcCall.arglist.arg.value.value
-			radius = funcCall.arglist.arglist.arg.value.value
+			degree = funcCall.arglist.arg.value.value.to_f
+			radius = funcCall.arglist.arglist.arg.value.value.to_f
 			arc(degree,radius)
 			return true
 		
@@ -103,10 +103,14 @@ class Image
 	def backward(steps)
 	end
 	
-	def rotater(degree)
+	# Rotate cursor clockwise
+	def rotater(rotationDegree)
+		@degree = (@degree - rotationDegree) % 360;
 	end
 	
-	def rotatel(degree)
+	# Rotate cursor counterclockwise
+	def rotatel(rotationDegree)
+		@degree = (@degree + rotationDegree) % 360;
 	end
 	
 	def setposition(x,y)
