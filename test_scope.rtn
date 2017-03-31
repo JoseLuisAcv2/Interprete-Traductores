@@ -19,7 +19,7 @@ program
 				for b from 4 to 52 by 1 do
 				end;
 			end;
-			arc(5,10);
+			setposition(-5,5);
 		end;
 		f(1);
 	end;

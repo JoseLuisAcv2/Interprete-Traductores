@@ -14,9 +14,9 @@
 class Image
 
 	def initialize(height=11, width=11, cursor_x=0, cursor_y=0, degree=90, opened_eye=true)
-		@image = Array.new(height) { Array.new(width) { 0 } }
-		@height = height
-		@width = width
+		@height = height.to_i
+		@width = width.to_i
+		@image = Array.new(@height) { Array.new(@width) { 0 } }
 		@cursor_column = convert_x_to_column(cursor_x)
 		@cursor_row = convert_y_to_row(cursor_y)
 		@degree = degree
@@ -75,8 +75,8 @@ class Image
 
 	# Reset cursor coordinates to center of image	
 	def home()
-		@cursor_row = (@height-1)/2
-		@cursor_column = (@width-1)/2
+		@cursor_row = ((@height-1)/2).to_i
+		@cursor_column = ((@width-1)/2).to_i
 	end
 	
 	# Enable cursor to mark movement
@@ -147,12 +147,12 @@ class Image
 	# Auxiliary function to convert x coordinate from
 	# cartesian system to matrix column
 	def convert_x_to_column(x)
-		return ((@width-1)/2) + x
+		return (((@width-1)/2) + x).to_i
 	end
 
 	# Auxiliary function to convert y coordinate from
 	# cartesian system to matrix row
 	def convert_y_to_row(y)
-		return ((@width-1)/2) - y
+		return (((@width-1)/2) - y).to_i
 	end
 end
