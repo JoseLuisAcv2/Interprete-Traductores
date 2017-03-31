@@ -12,6 +12,7 @@ require_relative 'runtime_errors'
 require_relative 'retina_drawing_functions'
 
 $returnValue
+$image = Image.new
 
 # Retina interpreter
 class Interpreter
@@ -291,7 +292,7 @@ class Interpreter
 	def callfunc_interpreter(funcCall, symbolTable)
 
 		# Check if it is retina drawing function
-		if(retina_function(funcCall)) then
+		if($image.retina_function(funcCall)) then
 			return;
 		end;
 		
