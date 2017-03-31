@@ -1,0 +1,169 @@
+func prueba(number a)
+begin
+
+    with
+    do
+    end;
+
+    with
+    do
+
+        with
+        do
+        end;
+
+        with
+        do
+
+            with
+            do
+
+                with
+                do
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+        
+                        with
+                        do
+                        end;
+
+                    end;
+        
+                    with
+                    do
+                    end;
+        
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+                    with
+                    do
+                    end;
+
+
+                end;
+
+            end;
+
+        end;
+
+        with
+        do
+        end;
+
+    end;
+
+    with
+    do
+
+        for i from 1 to 3 by 1 do
+
+            for i from 1 to 3 do
+
+                with
+                do
+
+                    #trambolico();
+
+                end;
+            
+                with
+                do
+                end;
+            
+                with
+                do
+                end;
+
+            end;
+        
+            for i from 1 to 3 do
+            end;
+
+        end;
+
+    end;
+
+    with
+    do
+    end;
+
+    with
+    do
+    end;
+
+end;
+
+func min(number x, number y, boolean z) -> number
+begin
+    with
+        boolean b = true;
+        number a;
+        number c = 1;
+    do
+        for i from min(1,2,true) to 2+1 by 3 do
+            repeat i times
+                min(1,2,true);
+                a;
+            end;
+            return 2;
+        end;
+    end;
+end;
+
+func inc(number steps)
+begin
+    arc(1,2);
+    steps;
+end;
+
+func circle(number radio)
+begin
+    while 1>2 do
+        return;
+    end;
+end;
+
+program
+    write "Insert a number : ";
+    with
+        number n;
+    do
+        read n; # I suggest that this number be a multiple of 360
+        with
+            number angle = n;
+        do
+            while angle <= 360 do
+                #rotater(n);
+                circle(100);
+                angle = angle + n;
+            end;
+        end;
+    end;
+end;

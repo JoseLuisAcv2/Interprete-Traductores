@@ -654,6 +654,9 @@ class Interpreter
 			# Print space character for following items if not last
 			if(not last) then
 				print " "
+			else
+				# If last item print newline
+				puts
 			end
 			$stdout.flush
 		end

@@ -1,0 +1,12 @@
+program
+	with
+		number n;
+	do
+		writeln "enter number of sides:";
+		read n;
+		repeat n times
+			rotatel(360 / n);
+			forward(100);
+		end;
+	end;
+end;

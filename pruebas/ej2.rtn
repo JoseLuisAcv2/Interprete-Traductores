@@ -1,0 +1,15 @@
+program
+	with
+		number i;
+	do
+		i = 27;
+		with
+			number i = 37;
+		do
+			writeln i; # Imprime 37
+		end;
+		writeln i; # Imprime 27
+	end;
+	write "a","b","c";
+	writeln "a","b","c";
+end;

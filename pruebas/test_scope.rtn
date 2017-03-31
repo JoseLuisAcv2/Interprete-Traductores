@@ -1,0 +1,26 @@
+func f(number n) begin
+	#writeln "1";
+	#writeln "2";
+	return;
+	#writeln "3";
+	#writeln "4";
+end;
+
+program
+	with 
+		number a = 1;
+	do
+		with
+			number b = 2;
+		do
+			with
+				number a = 3;
+			do
+				for b from 4 to 52 by 1 do
+				end;
+			end;
+			setposition(-5,5);
+		end;
+		f(1);
+	end;
+end;
