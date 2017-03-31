@@ -9,6 +9,7 @@
 #
 
 require_relative 'runtime_errors'
+require_relative 'retina_drawing_functions'
 
 $returnValue
 
@@ -288,6 +289,12 @@ class Interpreter
 	end
 
 	def callfunc_interpreter(funcCall, symbolTable)
+
+		# Check if it is retina drawing function
+		if(retina_function(funcCall)) then
+			return;
+		end;
+		
 		# Get function definition
 		funcDef = funcCall.funcdef
 
