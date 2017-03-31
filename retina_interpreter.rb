@@ -290,9 +290,27 @@ class Interpreter
 	end
 
 	def callfunc_interpreter(funcCall, symbolTable)
+		
+		# Get function identifier
+		funcIdent = funcCall.ident.name.value
 
 		# Check if it is retina drawing function
-		if($image.retina_function(funcCall)) then
+		if($image.is_retina_function(funcIdent)) then
+
+			if(not funcCall.arglist.nil?) then
+				# First argument
+				arg1 = funcCall.arglist.arg
+				if(not funcCall.arglist.arglist.nil?) then
+					# Second argument
+					arg2 = funcCall.arglist.arglist.arg
+				end
+			end
+
+			arg1 = expr_interpreter(arg1, symbolTable) unless arg1.nil?
+			arg2 = expr_interpreter(arg2, symbolTable) unless arg2.nil?
+
+			$image.call_retina_function(funcIdent, arg1, arg2)
+
 			return;
 		end;
 		

@@ -26,57 +26,49 @@ class Image
 		@image[@cursor_row][@cursor_column] = 1
 	end
 
-	# Compare to retina predefined functions
-	def retina_function(funcCall)
-	
-		# Function identifier
-		funcIdent = funcCall.ident.name.value
-	
+	# Check if function is predefined
+	def is_retina_function(funcIdent)
+		# Return true if match found
+		return ["home","openeye","closeeye","forward","backward","rotater","rotatel","setposition","arc"].include? funcIdent
+	end
+
+	def call_retina_function(funcIdent, arg1 = nil, arg2 = nil)
 		# If match found then call function
 		case funcIdent
 		when "home"
 			home()
-			return true
 		
 		when "openeye"
 			openeye()
-			return true
 		
 		when "closeeye"
 			closeeye()
-			return true
 		
 		when "forward"
-			steps = funcCall.arglist.arg.value.value.to_f
+			steps = arg1
 			forward(steps)
-			return true
 		
 		when "backward"
-			steps = funcCall.arglist.arg.value.value.to_f
+			steps = arg1
 			backward(steps)
-			return true
 		
 		when "rotater"
-			degree = funcCall.arglist.arg.value.value.to_f
+			degree = arg1
 			rotater(degree)
-			return true
 		
 		when "rotatel"
-			degree = funcCall.arglist.arg.value.value.to_f
+			degree = arg1
 			rotatel(degree)
-			return true
 		
 		when "setposition"
-			x = funcCall.arglist.arg.value.value.to_f
-			y = funcCall.arglist.arglist.arg.value.value.to_f
+			x = arg1
+			y = arg2
 			setposition(x,y)
-			return true
 		
 		when "arc"
-			degree = funcCall.arglist.arg.value.value.to_f
+			degree = arg1
 			radius = funcCall.arglist.arglist.arg.value.value.to_f
 			arc(degree,radius)
-			return true
 		
 		end
 	end
@@ -113,7 +105,10 @@ class Image
 		@degree = (@degree + rotationDegree) % 360;
 	end
 	
+	# Set cursor coordinates
 	def setposition(x,y)
+		@cursor_column = convert_x_to_column(x)
+		@cursor_row = convert_y_to_row(y)
 	end
 	
 	def arc(degree,radius)
