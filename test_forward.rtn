@@ -1,4 +1,0 @@
-program
-	rotatel(-30.77);
-	forward(500.121212);
-end;
