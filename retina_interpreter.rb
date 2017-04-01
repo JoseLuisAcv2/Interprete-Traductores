@@ -224,7 +224,7 @@ class Interpreter
 			if(rightValue.eql? 0.0) then
 				raise RunTimeError.new instr, "division by zero in integer division"
 			end
-			return (leftValue / rightValue).truncate
+			return (leftValue.to_i / rightValue.to_i).to_i
 		
 		elsif(op.eql? "EXACT DIVISION") then
 			if(rightValue.eql? 0.0) then
@@ -236,7 +236,7 @@ class Interpreter
 			if(rightValue.eql? 0.0) then
 				raise RunTimeError.new instr, "division by zero in integer modulo"
 			end
-			return (leftValue % rightValue).truncate
+			return (leftValue.to_i % rightValue.to_i).to_i
 		
 		elsif(op.eql? "EXACT MODULO") then
 			if(rightValue.eql? 0.0) then
@@ -450,7 +450,7 @@ class Interpreter
 		counter = forblk.counter.name.value
 		symbolTable.insert(counter, "number")
 		
-		# Get initial values
+		# Get bound values
 		lower_bound = expr_interpreter(forblk.lower_bound,symbolTable)
 		upper_bound = expr_interpreter(forblk.upper_bound,symbolTable)
 		increment = expr_interpreter(forblk.increment,symbolTable)
@@ -465,13 +465,7 @@ class Interpreter
 			
 			# Interpret instructions in for loop block
 			instrlist_interpreter(forblk.instrlist, symbolTable)
-
-			# Get updated values after instructions are interpreted
-			counterValue = symbolTable.get_value(counter)
-			lower_bound = expr_interpreter(forblk.lower_bound,symbolTable)
-			upper_bound = expr_interpreter(forblk.upper_bound,symbolTable)
-			increment = expr_interpreter(forblk.increment,symbolTable)
-			
+		
 			# Increment counter value
 			counterValue = counterValue + increment
 			symbolTable.set_value(counter, counterValue)
@@ -486,7 +480,7 @@ class Interpreter
 		counter = constforblk.counter.name.value
 		symbolTable.insert(counter, "number")
 
-		# Get initial values
+		# Get bound values
 		lower_bound = expr_interpreter(constforblk.lower_bound,symbolTable)
 		upper_bound = expr_interpreter(constforblk.upper_bound,symbolTable)
 
@@ -504,15 +498,6 @@ class Interpreter
 			
 			# Interpret instructions in for loop block
 			instrlist_interpreter(constforblk.instrlist, symbolTable)
-
-			# Get updated values after instructions are interpreted
-			counterValue = symbolTable.get_value(counter)
-			lower_bound = expr_interpreter(constforblk.lower_bound,symbolTable)
-			upper_bound = expr_interpreter(constforblk.upper_bound,symbolTable)
-
-			# Appy floor function
-			lower_bound = lower_bound.floor
-			upper_bound = upper_bound.floor
 			
 			# Increment counter value by 1
 			counterValue = counterValue + 1
@@ -532,9 +517,6 @@ class Interpreter
 
 			# Interpret instructions in repeat block
 			instrlist_interpreter(repeat.instrlist, symbolTable)
-
-			# Get updated value of repeat expression after instructions are interpreted
-			exprValue = expr_interpreter(repeat.expr, symbolTable)
 
 			# Increment counter by 1
 			i = i + 1			
@@ -656,7 +638,7 @@ class Interpreter
 				print " "
 			else
 				# If last item print newline
-				puts
+				puts ""
 			end
 			$stdout.flush
 		end
